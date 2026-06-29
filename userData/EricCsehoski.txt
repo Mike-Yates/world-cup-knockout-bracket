@@ -80,7 +80,7 @@ Portugal
 United States
 
 Brazil
-Mexico
+England
 
 Argentina
 Colombia
@@ -90,7 +90,7 @@ France
 Portugal
 
 Brazil
-Colombia
+Argentina
 
 # Round of 2
 France

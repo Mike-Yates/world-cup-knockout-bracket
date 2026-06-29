@@ -54,13 +54,13 @@ France
 Canada
 Netherlands
 
-Portugal
+Croatia
 Spain
 
 United States
-Senegal
+Belgium
 
-Brazil
+Japan
 Norway
 
 Mexico
@@ -70,31 +70,31 @@ Argentina
 Egypt
 
 Algeria
-Colombia
+Ghana
 
 # Round of 8
 France
 Netherlands
 
-Portugal
+Spain
 United States
 
-Brazil
-Mexico
+Japan
+England
 
 Argentina
-Colombia
+Ghana
 
 # Round of 4
 France
-Portugal
+Spain
 
-Brazil
-Colombia
+England
+Argentina
 
 # Round of 2
 France
-Brazil
+Argentina
 
 # Winner
 France

@@ -60,26 +60,26 @@ Spain
 United States
 Senegal
 
-Brazil
+Japan
 Norway
 
 Mexico
-England
+DR Congo
 
 Argentina
 Egypt
 
-Algeria
+Switzerland
 Colombia
 
 # Round of 8
 France
-Netherlands
+Canada
 
-Portugal
+Spain
 United States
 
-Brazil
+Norway
 Mexico
 
 Argentina
@@ -87,14 +87,14 @@ Colombia
 
 # Round of 4
 France
-Portugal
+Spain
 
-Brazil
+Norway
 Colombia
 
 # Round of 2
-France
-Brazil
+Spain
+Colombia
 
 # Winner
-France
+Spain

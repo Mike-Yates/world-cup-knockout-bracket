@@ -52,15 +52,15 @@ Germany
 France
 
 Canada
-Netherlands
+Morocco
 
-Portugal
+Croatia
 Spain
 
 United States
-Senegal
+Belgium
 
-Brazil
+Japan
 Norway
 
 Mexico
@@ -69,17 +69,17 @@ England
 Argentina
 Egypt
 
-Algeria
+Switzerland
 Colombia
 
 # Round of 8
 France
-Netherlands
+Morocco
 
-Portugal
+Spain
 United States
 
-Brazil
+Norway
 Mexico
 
 Argentina
@@ -87,14 +87,14 @@ Colombia
 
 # Round of 4
 France
-Portugal
+Spain
 
-Brazil
-Colombia
+Mexico
+Argentina
 
 # Round of 2
 France
-Brazil
+Argentina
 
 # Winner
 France
