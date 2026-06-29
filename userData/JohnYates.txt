@@ -1,0 +1,100 @@
+# Round of 32
+Germany
+Paraguay
+
+France
+Sweden
+
+South Africa
+Canada
+
+Netherlands
+Morocco
+
+Portugal
+Croatia
+
+Spain
+Austria
+
+United States
+Bosnia and Herz.
+
+Belgium
+Senegal
+
+Brazil
+Japan
+
+Ivory Coast
+Norway
+
+Mexico
+Ecuador
+
+England
+DR Congo
+
+Argentina
+Cape Verde
+
+Australia
+Egypt
+
+Switzerland
+Algeria
+
+Colombia
+Ghana
+
+# Round of 16
+Germany
+France
+
+South Africa
+Morocco
+
+Portugal
+Spain
+
+United States
+Belgium
+
+Brazil
+Norway
+
+Mexico
+England
+
+Argentina
+Australia
+
+Algeria
+Colombia
+
+# Round of 8
+France
+South Africa
+
+Spain
+United States
+
+Brazil
+England
+
+Argentina
+Colombia
+
+# Round of 4
+France
+Spain
+
+Brazil
+Colombia
+
+# Round of 2
+France
+Brazil
+
+# Winner
+France
