@@ -53,12 +53,17 @@ const StatusMark = ({ evaluation }: { evaluation?: PickEvaluation }) => {
   );
 };
 
-const TeamBadge = ({ teamId, muted = false }: { teamId: TeamId; muted?: boolean }) => {
+const TeamBadge = ({ teamId, muted = false, compactOnMobile = false }: { teamId: TeamId; muted?: boolean; compactOnMobile?: boolean }) => {
   const team = getTeam(teamId);
   return (
-    <span className={`team-badge${muted ? ' team-badge-muted' : ''}`}>
+    <span className={`team-badge${muted ? ' team-badge-muted' : ''}${compactOnMobile ? ' team-badge-compact-mobile' : ''}`}>
       <img className="flag" src={getFlagImageUrl(team.countryCode)} alt="" aria-hidden="true" loading="lazy" />
-      <span>{team.name}</span>
+      <span className="team-name">{team.name}</span>
+      {compactOnMobile ? (
+        <span className="team-code" aria-hidden="true">
+          {team.fifaCode}
+        </span>
+      ) : null}
     </span>
   );
 };
@@ -72,11 +77,20 @@ const Leaderboard = ({ scores }: { scores: ParticipantScore[] }) => (
 
     <div className="leaderboard-table" role="table" aria-label="Yates Cup leaderboard">
       <div className="leaderboard-row leaderboard-head" role="row">
-        <span role="columnheader">Rank</span>
+        <span role="columnheader" aria-label="Rank">
+          <span className="label-full">Rank</span>
+          <span className="label-short">#</span>
+        </span>
         <span role="columnheader">Name</span>
-        <span role="columnheader">Points</span>
+        <span role="columnheader" aria-label="Points">
+          <span className="label-full">Points</span>
+          <span className="label-short">Pts</span>
+        </span>
         <span role="columnheader">Champion</span>
-        <span role="columnheader">Total Possible</span>
+        <span role="columnheader" aria-label="Total Possible">
+          <span className="label-full">Total Possible</span>
+          <span className="label-short">Max</span>
+        </span>
       </div>
 
       {scores.map((score, index) => (
@@ -89,7 +103,7 @@ const Leaderboard = ({ scores }: { scores: ParticipantScore[] }) => (
           </span>
           <span role="cell">{score.currentPoints}</span>
           <span role="cell">
-            <TeamBadge teamId={score.championPickTeamId} />
+            <TeamBadge teamId={score.championPickTeamId} compactOnMobile />
           </span>
           <span className="possible" role="cell">
             {score.totalPossible}

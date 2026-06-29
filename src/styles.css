@@ -225,6 +225,10 @@ h3 {
   text-transform: uppercase;
 }
 
+.label-short {
+  display: none;
+}
+
 .leaderboard-button {
   cursor: pointer;
   transition:
@@ -256,6 +260,10 @@ h3 {
   gap: 8px;
   color: #fff;
   font-weight: 800;
+}
+
+.team-code {
+  display: none;
 }
 
 .team-badge-muted {
@@ -518,11 +526,15 @@ h3 {
   }
 
   .leaderboard-row {
-    grid-template-columns: 38px minmax(88px, 1fr) 50px minmax(104px, 1fr) 76px;
-    min-width: 460px;
-    gap: 7px;
-    padding: 12px 10px;
+    grid-template-columns: 28px minmax(76px, 1.05fr) 34px minmax(82px, 0.95fr) 40px;
+    min-width: 0;
+    gap: 5px;
+    padding: 12px 8px;
     font-size: 0.88rem;
+  }
+
+  .leaderboard-row > span {
+    min-width: 0;
   }
 
   .leaderboard-head {
@@ -530,8 +542,27 @@ h3 {
     letter-spacing: 0.06em;
   }
 
+  .label-full {
+    display: none;
+  }
+
+  .label-short {
+    display: inline;
+  }
+
   .leaderboard-row .team-badge {
     gap: 5px;
+  }
+
+  .leaderboard-row .team-badge-compact-mobile .team-name {
+    display: none;
+  }
+
+  .leaderboard-row .team-badge-compact-mobile .team-code {
+    display: inline;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
   }
 
   .leaderboard-row .flag {
