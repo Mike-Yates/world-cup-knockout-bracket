@@ -1,7 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { fallbackResults } from '../data/results';
+import type { ResultsByMatch } from '../types';
 import { parseParticipantFile } from './participants';
 import { evaluateParticipant, rankParticipants } from './scoring';
+
+const canadaResults: ResultsByMatch = {
+  'r32-03': {
+    matchId: 'r32-03',
+    status: 'final',
+    homeScore: 0,
+    awayScore: 1,
+    winnerTeamId: 'canada',
+    source: 'test',
+  },
+};
 
 const baseRound32 = `# Round of 32
 Germany
@@ -115,8 +126,8 @@ const participantFromText = (fileName: string, text: string) => parseParticipant
 
 describe('scoring', () => {
   it('scores the known Canada 1-0 result and cascades total possible points', () => {
-    const mike = evaluateParticipant(participantFromText('MikeYates.txt', correctCanadaPicks), fallbackResults);
-    const john = evaluateParticipant(participantFromText('JohnYates.txt', wrongSouthAfricaPicks), fallbackResults);
+    const mike = evaluateParticipant(participantFromText('MikeYates.txt', correctCanadaPicks), canadaResults);
+    const john = evaluateParticipant(participantFromText('JohnYates.txt', wrongSouthAfricaPicks), canadaResults);
 
     expect(mike.currentPoints).toBe(1);
     expect(mike.totalPossible).toBe(57);
@@ -130,7 +141,7 @@ describe('scoring', () => {
   it('ranks by points, then total possible, then name', () => {
     const ranked = rankParticipants(
       [participantFromText('JohnYates.txt', wrongSouthAfricaPicks), participantFromText('MikeYates.txt', correctCanadaPicks)],
-      fallbackResults,
+      canadaResults,
     );
 
     expect(ranked.map((score) => score.participant.displayName)).toEqual(['Mike Yates', 'John Yates']);

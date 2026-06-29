@@ -7,6 +7,14 @@ export const fallbackResults: ResultsByMatch = {
     homeScore: 0,
     awayScore: 1,
     winnerTeamId: 'canada',
-    source: 'test',
+    source: 'manual',
+  },
+  'r32-09': {
+    matchId: 'r32-09',
+    status: 'final',
+    homeScore: 2,
+    awayScore: 1,
+    winnerTeamId: 'brazil',
+    source: 'manual',
   },
 };

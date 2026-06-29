@@ -65,11 +65,13 @@ Leaderboard sorting:
 
 ## Results
 
-The app attempts to load the Canada/South Africa result from a free public API provider in the browser. If no reliable API result is available, it falls back to `src/data/results.ts`.
+The app loads cached final results from `src/data/results.ts`, then attempts to fetch final results from a free public API provider in the browser. API results are only used when the provider marks the match final.
 
-Known validation result:
+Refresh cached final results before a redeploy:
 
-- Canada beat South Africa 1-0.
+```bash
+npm run update:results
+```
 
 ## AWS Deployment Target
 

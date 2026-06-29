@@ -205,7 +205,7 @@ export default function App() {
   useEffect(() => {
     let isMounted = true;
 
-    loadApiResults().then((apiResults) => {
+    loadApiResults(fallbackResults).then((apiResults) => {
       if (!isMounted || Object.keys(apiResults).length === 0) {
         return;
       }

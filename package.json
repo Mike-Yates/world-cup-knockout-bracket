@@ -11,7 +11,8 @@
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
     "test:watch": "vitest",
-    "generate:data": "tsx scripts/generate-participants.ts"
+    "generate:data": "tsx scripts/generate-participants.ts",
+    "update:results": "tsx scripts/update-results.ts"
   },
   "dependencies": {
     "react": "^19.0.0",
