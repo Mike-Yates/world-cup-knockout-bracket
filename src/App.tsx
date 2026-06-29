@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import generatedParticipants from './data/generated/participants.json';
+import { championPlayersByTeamId } from './data/championPlayers';
 import { initialTeamIds } from './data/bracket';
 import { fallbackResults } from './data/results';
 import { getFlagImageUrl, getTeam } from './data/teams';
@@ -167,38 +168,45 @@ const Bracket = ({ score }: { score: ParticipantScore }) => {
   );
 };
 
-const ParticipantView = ({ score }: { score: ParticipantScore }) => (
-  <main>
-    <button className="back-button" onClick={clearHash}>
-      ← Back to leaderboard
-    </button>
+const ParticipantView = ({ score }: { score: ParticipantScore }) => {
+  const championPlayer = championPlayersByTeamId[score.championPickTeamId];
 
-    <section className="hero participant-hero">
-      <div>
-        <p className="eyebrow">Bracket Card</p>
-        <h1>{score.participant.displayName}</h1>
-      </div>
-      <div className="score-summary" aria-label="Participant score summary">
-        <span>
-          <strong>{score.currentPoints}</strong>
-          Points
-        </span>
-        <span>
-          <strong>{score.totalPossible}</strong>
-          Total Possible
-        </span>
-        <span>
-          <strong>
-            <TeamBadge teamId={score.championPickTeamId} />
-          </strong>
-          Champion Pick
-        </span>
-      </div>
-    </section>
+  return (
+    <main>
+      <button className="back-button" onClick={clearHash}>
+        ← Back to leaderboard
+      </button>
 
-    <Bracket score={score} />
-  </main>
-);
+      <section className="hero participant-hero">
+        <div>
+          <p className="eyebrow">Bracket Card</p>
+          <h1>{score.participant.displayName}</h1>
+        </div>
+        <div className={`score-summary${championPlayer ? ' has-player-photo' : ''}`} aria-label="Participant score summary">
+          <div className="score-stats">
+            <span>
+              <strong>{score.currentPoints}</strong>
+              Points
+            </span>
+            <span>
+              <strong>{score.totalPossible}</strong>
+              Total Possible
+            </span>
+            <span>
+              <strong>
+                <TeamBadge teamId={score.championPickTeamId} />
+              </strong>
+              Champion Pick
+            </span>
+          </div>
+          {championPlayer ? <img className="champion-player-photo" src={championPlayer.imageUrl} alt={championPlayer.name} title={championPlayer.credit} /> : null}
+        </div>
+      </section>
+
+      <Bracket score={score} />
+    </main>
+  );
+};
 
 const HomeView = ({ scores }: { scores: ParticipantScore[] }) => (
   <main>
