@@ -19,6 +19,42 @@ type SportsDbResponse = {
   events?: SportsDbEvent[] | null;
 };
 
+type EspnCompetitor = {
+  homeAway?: string;
+  score?: string | number | null;
+  winner?: boolean;
+  advance?: boolean;
+  team?: {
+    displayName?: string;
+    name?: string;
+    location?: string;
+  };
+};
+
+type EspnCompetition = {
+  status?: {
+    type?: {
+      completed?: boolean;
+      state?: string;
+      name?: string;
+      detail?: string;
+      shortDetail?: string;
+    };
+  };
+  competitors?: EspnCompetitor[];
+};
+
+type EspnEvent = {
+  competitions?: EspnCompetition[];
+  season?: {
+    year?: number;
+  };
+};
+
+type EspnScoreboardResponse = {
+  events?: EspnEvent[];
+};
+
 const normalizeName = (name: string | undefined) => name?.replace(/[^a-zA-Z0-9]+/g, ' ').trim().toLowerCase();
 
 const toScore = (score: string | number | null | undefined) => {
@@ -126,6 +162,57 @@ export const normalizeSportsDbResult = (payload: SportsDbResponse, matchId: Matc
   };
 };
 
+export const normalizeEspnResult = (payload: EspnScoreboardResponse, matchId: MatchId, teamIds = resolveMatchTeamIds(matchId, {})): MatchResult | undefined => {
+  const match = matchesById[matchId];
+  if (!match || !teamIds) {
+    return undefined;
+  }
+
+  for (const event of payload.events ?? []) {
+    if (event.season?.year && event.season.year !== 2026) {
+      continue;
+    }
+
+    for (const competition of event.competitions ?? []) {
+      const status = competition.status?.type;
+      if (!status?.completed && status?.state !== 'post') {
+        continue;
+      }
+
+      const competitors = competition.competitors ?? [];
+      const candidateTeamIds = competitors.map((competitor) => getTeamIdByName(competitor.team?.displayName ?? competitor.team?.name ?? competitor.team?.location ?? ''));
+      if (!teamIds.every((teamId) => candidateTeamIds.includes(teamId))) {
+        continue;
+      }
+
+      const winner = competitors.find((competitor) => competitor.winner || competitor.advance);
+      const winnerTeamId = winner ? getTeamIdByName(winner.team?.displayName ?? winner.team?.name ?? winner.team?.location ?? '') : undefined;
+      if (!winnerTeamId || !teamIds.includes(winnerTeamId)) {
+        continue;
+      }
+
+      const home = competitors.find((competitor) => competitor.homeAway === 'home') ?? competitors[0];
+      const away = competitors.find((competitor) => competitor.homeAway === 'away') ?? competitors[1];
+      const homeScore = toScore(home?.score);
+      const awayScore = toScore(away?.score);
+      if (homeScore === undefined || awayScore === undefined) {
+        continue;
+      }
+
+      return {
+        matchId,
+        status: 'final',
+        homeScore,
+        awayScore,
+        winnerTeamId,
+        source: 'api',
+      };
+    }
+  }
+
+  return undefined;
+};
+
 export const normalizeCanadaSportsDbResult = (payload: SportsDbResponse): MatchResult | undefined => normalizeSportsDbResult(payload, 'r32-03');
 
 const fetchJson = async (url: string) => {
@@ -134,6 +221,14 @@ const fetchJson = async (url: string) => {
     throw new Error(`Result API request failed with ${response.status}`);
   }
   return response.json() as Promise<unknown>;
+};
+
+const loadEspnScoreboard = async () => {
+  try {
+    return (await fetchJson('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard')) as EspnScoreboardResponse;
+  } catch {
+    return undefined;
+  }
 };
 
 const loadMatchResult = async (matchId: MatchId, teamIds: [TeamId, TeamId]) => {
@@ -164,6 +259,7 @@ export const loadApiResults = async (knownResults: ResultsByMatch = {}): Promise
   }
 
   const loadedResults: ResultsByMatch = {};
+  const espnScoreboard = await loadEspnScoreboard();
 
   for (const match of matches) {
     if (knownResults[match.id] || loadedResults[match.id]) {
@@ -172,6 +268,12 @@ export const loadApiResults = async (knownResults: ResultsByMatch = {}): Promise
 
     const teamIds = resolveMatchTeamIds(match.id, { ...knownResults, ...loadedResults });
     if (!teamIds) {
+      continue;
+    }
+
+    const espnResult = espnScoreboard ? normalizeEspnResult(espnScoreboard, match.id, teamIds) : undefined;
+    if (espnResult) {
+      loadedResults[espnResult.matchId] = espnResult;
       continue;
     }
 

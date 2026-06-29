@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeCanadaSportsDbResult, normalizeSportsDbResult, resolveMatchTeamIds } from './resultsApi';
+import { normalizeCanadaSportsDbResult, normalizeEspnResult, normalizeSportsDbResult, resolveMatchTeamIds } from './resultsApi';
 
 describe('results API normalization', () => {
   it('normalizes a Canada 1-0 result from a public API shape', () => {
@@ -68,6 +68,56 @@ describe('results API normalization', () => {
       homeScore: 2,
       awayScore: 1,
       winnerTeamId: 'brazil',
+      source: 'api',
+    });
+  });
+
+  it('normalizes ESPN penalty winners from the advancing team flag', () => {
+    const result = normalizeEspnResult(
+      {
+        events: [
+          {
+            season: { year: 2026 },
+            competitions: [
+              {
+                status: {
+                  type: {
+                    completed: true,
+                    state: 'post',
+                    name: 'STATUS_FINAL_PEN',
+                    detail: 'FT-Pens',
+                  },
+                },
+                competitors: [
+                  {
+                    homeAway: 'home',
+                    score: '1',
+                    winner: false,
+                    advance: false,
+                    team: { displayName: 'Germany' },
+                  },
+                  {
+                    homeAway: 'away',
+                    score: '1',
+                    winner: true,
+                    advance: true,
+                    team: { displayName: 'Paraguay' },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      'r32-01',
+    );
+
+    expect(result).toEqual({
+      matchId: 'r32-01',
+      status: 'final',
+      homeScore: 1,
+      awayScore: 1,
+      winnerTeamId: 'paraguay',
       source: 'api',
     });
   });
