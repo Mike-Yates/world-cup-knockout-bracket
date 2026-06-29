@@ -16,6 +16,7 @@
   --red: #ff5b5b;
   --muted: #aebbd0;
   --line: rgba(255, 255, 255, 0.12);
+  --bracket-line: rgba(233, 189, 116, 0.46);
 }
 
 * {
@@ -291,10 +292,11 @@ h3 {
   --round8-slot: calc((var(--slot) * 2) + var(--slot-gap));
   --round4-slot: calc((var(--round8-slot) * 2) + var(--slot-gap));
   --round2-slot: calc((var(--round4-slot) * 2) + var(--slot-gap));
-  --winner-slot: calc((var(--round2-slot) * 2) + var(--slot-gap));
+  --winner-slot: var(--round2-slot);
+  --column-gap: 12px;
   display: grid;
-  grid-template-columns: 270px 230px 230px 230px 230px 250px;
-  gap: 12px;
+  grid-template-columns: 270px 230px 230px 230px 230px 250px 230px 230px 230px 230px 270px;
+  gap: var(--column-gap);
   overflow-x: auto;
   padding: 18px;
 }
@@ -311,6 +313,14 @@ h3 {
 .bracket-slot {
   display: flex;
   align-items: center;
+  position: relative;
+}
+
+.bracket-slot::before,
+.bracket-slot::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
 }
 
 .slot-round32,
@@ -336,10 +346,68 @@ h3 {
 
 .match-card,
 .pick-card {
+  position: relative;
+  z-index: 1;
   border: 1px solid var(--gold-soft);
   border-radius: 14px;
   background: linear-gradient(135deg, rgba(15, 44, 78, 0.96), rgba(5, 18, 34, 0.96));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.side-left:not(.round-winner) .bracket-slot::after,
+.side-right:not(.round-winner) .bracket-slot::before {
+  top: 50%;
+  width: var(--column-gap);
+  height: 1px;
+  background: var(--bracket-line);
+}
+
+.side-left:not(.round-winner) .bracket-slot::after {
+  right: calc(var(--column-gap) * -1);
+}
+
+.side-right:not(.round-winner) .bracket-slot::before {
+  left: calc(var(--column-gap) * -1);
+}
+
+.side-left .slot-round8::before,
+.side-left .slot-round4::before,
+.side-left .slot-round2::before,
+.side-right .slot-round8::after,
+.side-right .slot-round4::after,
+.side-right .slot-round2::after {
+  width: 1px;
+  background: var(--bracket-line);
+}
+
+.side-left .slot-round8::before,
+.side-left .slot-round4::before,
+.side-left .slot-round2::before {
+  left: calc((var(--column-gap) * -0.5) - 0.5px);
+}
+
+.side-right .slot-round8::after,
+.side-right .slot-round4::after,
+.side-right .slot-round2::after {
+  right: calc((var(--column-gap) * -0.5) - 0.5px);
+}
+
+.side-left .slot-round8::before,
+.side-right .slot-round8::after {
+  top: calc(var(--slot) / 2);
+  bottom: calc(var(--slot) / 2);
+}
+
+.side-left .slot-round4::before,
+.side-right .slot-round4::after {
+  top: calc(var(--round8-slot) / 2);
+  bottom: calc(var(--round8-slot) / 2);
+}
+
+.side-left .slot-round2::before,
+.side-right .slot-round2::after {
+  top: calc(var(--round4-slot) / 2);
+  bottom: calc(var(--round4-slot) / 2);
 }
 
 .match-card {
@@ -460,8 +528,9 @@ h3 {
   .bracket-scroll {
     --slot: 74px;
     --slot-gap: 7px;
-    grid-template-columns: 205px 172px 172px 172px 172px 190px;
-    gap: 8px;
+    --column-gap: 7px;
+    grid-template-columns: 188px repeat(4, 68px) 74px repeat(4, 68px) 188px;
+    gap: 7px;
     padding: 10px;
   }
 
@@ -488,13 +557,16 @@ h3 {
     padding: 7px 4px;
     font-size: 0.66rem;
     letter-spacing: 0.08em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .match-team,
   .pick-card {
-    gap: 7px;
+    gap: 6px;
     min-height: 34px;
-    padding: 7px 8px;
+    padding: 7px;
   }
 
   .bracket-shell .team-badge,
@@ -509,6 +581,10 @@ h3 {
     width: 21px;
     height: 15px;
     border-radius: 2px;
+  }
+
+  .bracket-shell .round-column:not(.round-round32) .team-badge span:last-child {
+    display: none;
   }
 
   .status {
@@ -535,16 +611,17 @@ h3 {
   .bracket-scroll {
     --slot: 64px;
     --slot-gap: 6px;
-    grid-template-columns: 176px 148px 148px 148px 148px 162px;
-    gap: 6px;
-    padding: 8px;
+    --column-gap: 5px;
+    grid-template-columns: 158px repeat(4, 58px) 64px repeat(4, 58px) 158px;
+    gap: 5px;
+    padding: 7px;
   }
 
   .match-team,
   .pick-card {
-    gap: 5px;
+    gap: 4px;
     min-height: 30px;
-    padding: 6px 7px;
+    padding: 6px;
   }
 
   .bracket-shell .team-badge,

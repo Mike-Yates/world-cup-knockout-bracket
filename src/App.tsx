@@ -9,13 +9,18 @@ import type { Participant, ParticipantScore, PickEvaluation, PickRoundKey, Resul
 
 const participants = generatedParticipants as Participant[];
 
-const pickRounds: Array<{ key: PickRoundKey; label: string }> = [
-  { key: 'round32', label: 'Round of 32' },
-  { key: 'round16', label: 'Round of 16' },
-  { key: 'round8', label: 'Quarterfinals' },
-  { key: 'round4', label: 'Semifinals' },
-  { key: 'round2', label: 'Finalists' },
-  { key: 'winner', label: 'Champion' },
+const bracketColumns: Array<{ key: PickRoundKey; label: string; start: number; count: number; side: 'left' | 'center' | 'right' }> = [
+  { key: 'round32', label: 'Round of 32', start: 0, count: 8, side: 'left' },
+  { key: 'round16', label: 'Round of 16', start: 0, count: 8, side: 'left' },
+  { key: 'round8', label: 'Quarterfinals', start: 0, count: 4, side: 'left' },
+  { key: 'round4', label: 'Semifinals', start: 0, count: 2, side: 'left' },
+  { key: 'round2', label: 'Finalist', start: 0, count: 1, side: 'left' },
+  { key: 'winner', label: 'Champion', start: 0, count: 1, side: 'center' },
+  { key: 'round2', label: 'Finalist', start: 1, count: 1, side: 'right' },
+  { key: 'round4', label: 'Semifinals', start: 2, count: 2, side: 'right' },
+  { key: 'round8', label: 'Quarterfinals', start: 4, count: 4, side: 'right' },
+  { key: 'round16', label: 'Round of 16', start: 8, count: 8, side: 'right' },
+  { key: 'round32', label: 'Round of 32', start: 8, count: 8, side: 'right' },
 ];
 
 const hashToParticipantId = () => window.location.hash.replace(/^#\/bracket\//, '') || undefined;
@@ -122,21 +127,24 @@ const Bracket = ({ score }: { score: ParticipantScore }) => {
   return (
     <section className="bracket-shell" aria-label={`${score.participant.displayName} bracket`}>
       <div className="bracket-scroll">
-        {pickRounds.map((round) => (
-          <div key={round.key} className={`round-column round-${round.key}`}>
-            <h3>{round.label}</h3>
+        {bracketColumns.map((column) => (
+          <div key={`${column.side}-${column.key}-${column.start}`} className={`round-column round-${column.key} side-${column.side}`}>
+            <h3>{column.label}</h3>
             <div className="round-stack">
-              {round.key === 'round32'
-                ? Array.from({ length: 16 }, (_, index) => (
+              {column.key === 'round32'
+                ? Array.from({ length: column.count }, (_, index) => (
                     <div key={index} className="bracket-slot slot-round32">
-                      <FirstRoundMatch matchIndex={index} />
+                      <FirstRoundMatch matchIndex={column.start + index} />
                     </div>
                   ))
-                : score.participant.picks[round.key].map((teamId, index) => (
-                    <div key={`${round.key}-${index}`} className={`bracket-slot slot-${round.key}`}>
-                      <PickCard teamId={teamId} evaluation={evaluations.get(`${round.key}:${index}`)} />
-                    </div>
-                  ))}
+                : score.participant.picks[column.key].slice(column.start, column.start + column.count).map((teamId, index) => {
+                    const pickIndex = column.start + index;
+                    return (
+                      <div key={`${column.key}-${pickIndex}`} className={`bracket-slot slot-${column.key}`}>
+                        <PickCard teamId={teamId} evaluation={evaluations.get(`${column.key}:${pickIndex}`)} />
+                      </div>
+                    );
+                  })}
             </div>
           </div>
         ))}
