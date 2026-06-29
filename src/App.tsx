@@ -184,7 +184,13 @@ const HomeView = ({ scores }: { scores: ParticipantScore[] }) => (
       <div>
         <p className="eyebrow">2026 Knockout Challenge</p>
         <h1>Yates Cup</h1>
-        <p className="hero-copy">Track every bracket, every eliminated pick, and the race for total possible points.</p>
+        <ul className="scoring-list" aria-label="Scoring rules">
+          <li>Round of 32: 1 point</li>
+          <li>Round of 16: 2 points</li>
+          <li>Quarterfinals: 3 points</li>
+          <li>Semifinals: 4 points</li>
+          <li>Finals: 5 points</li>
+        </ul>
       </div>
     </section>
 
