@@ -49,10 +49,10 @@ Ghana
 
 # Round of 16
 Germany
-France
+Sweden
 
 Canada
-Morocco
+Netherlands
 
 Portugal
 Spain
@@ -61,7 +61,7 @@ United States
 Belgium
 
 Brazil
-Norway
+Ivory Coast
 
 Mexico
 England
@@ -73,28 +73,28 @@ Algeria
 Colombia
 
 # Round of 8
-France
-Morocco
+Sweden
+Netherlands
 
 Spain
 United States
 
 Brazil
-England
+Mexico
 
 Argentina
 Colombia
 
 # Round of 4
-France
-Spain
+Netherlands
+United States
 
 Brazil
-Colombia
+Argentina
 
 # Round of 2
-Spain
-Brazil
+Netherlands
+Argentina
 
 # Winner
-Spain
+Argentina

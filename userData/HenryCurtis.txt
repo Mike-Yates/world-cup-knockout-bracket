@@ -48,53 +48,53 @@ Colombia
 Ghana
 
 # Round of 16
-Germany
+Paraguay
 France
 
 Canada
-Morocco
+Netherlands
 
-Portugal
-Spain
+Croatia
+Austria
 
 United States
 Belgium
 
-Brazil
+Japan
 Norway
 
-Mexico
+Ecuador
 England
 
 Argentina
 Australia
 
 Algeria
-Colombia
+Ghana
 
 # Round of 8
 France
-Morocco
+Netherlands
 
-Spain
+Austria
 United States
 
-Brazil
+Japan
 England
 
 Argentina
-Colombia
+Ghana
 
 # Round of 4
-France
-Spain
+Netherlands
+United States
 
-Brazil
-Colombia
+England
+Argentina
 
 # Round of 2
-Spain
-Brazil
+Netherlands
+Argentina
 
 # Winner
-Spain
+Argentina

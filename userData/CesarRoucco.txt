@@ -58,18 +58,18 @@ Portugal
 Spain
 
 United States
-Belgium
+Senegal
 
 Brazil
 Norway
 
-Mexico
+Ecuador
 England
 
 Argentina
-Australia
+Egypt
 
-Algeria
+Switzerland
 Colombia
 
 # Round of 8
@@ -90,11 +90,11 @@ France
 Spain
 
 Brazil
-Colombia
+Argentina
 
 # Round of 2
 Spain
 Brazil
 
 # Winner
-Spain
+Brazil

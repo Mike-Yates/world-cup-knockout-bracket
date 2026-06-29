@@ -67,34 +67,34 @@ Mexico
 England
 
 Argentina
-Australia
+Egypt
 
-Algeria
+Switzerland
 Colombia
 
 # Round of 8
 France
 Morocco
 
-Spain
-United States
+Portugal
+Belgium
 
-Brazil
-England
+Norway
+Mexico
 
 Argentina
 Colombia
 
 # Round of 4
 France
-Spain
+Portugal
 
-Brazil
-Colombia
+Norway
+Argentina
 
 # Round of 2
-Spain
-Brazil
+France
+Argentina
 
 # Winner
-Spain
+Argentina

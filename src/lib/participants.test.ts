@@ -1,9 +1,107 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { displayNameFromFileName, parseParticipantFile } from './participants';
 
-const readUserData = (fileName: string) => readFileSync(path.join(process.cwd(), 'userData', fileName), 'utf8');
+const samplePicks = `# Round of 32
+Germany
+Paraguay
+
+France
+Sweden
+
+South Africa
+Canada
+
+Netherlands
+Morocco
+
+Portugal
+Croatia
+
+Spain
+Austria
+
+United States
+Bosnia and Herz.
+
+Belgium
+Senegal
+
+Brazil
+Japan
+
+Ivory Coast
+Norway
+
+Mexico
+Ecuador
+
+England
+DR Congo
+
+Argentina
+Cape Verde
+
+Australia
+Egypt
+
+Switzerland
+Algeria
+
+Colombia
+Ghana
+
+# Round of 16
+Germany
+France
+
+Canada
+Netherlands
+
+Portugal
+Spain
+
+United States
+Belgium
+
+Brazil
+Norway
+
+Mexico
+England
+
+Argentina
+Egypt
+
+Switzerland
+Colombia
+
+# Round of 8
+France
+Netherlands
+
+Spain
+Belgium
+
+Brazil
+England
+
+Argentina
+Colombia
+
+# Round of 4
+France
+Spain
+
+England
+Argentina
+
+# Round of 2
+France
+Argentina
+
+# Winner
+France
+`;
 
 describe('participant parser', () => {
   it('formats display names from filenames', () => {
@@ -11,10 +109,10 @@ describe('participant parser', () => {
     expect(displayNameFromFileName('john_yates.txt')).toBe('john yates');
   });
 
-  it('parses the provided Mike Yates picks', () => {
-    const participant = parseParticipantFile({ fileName: 'MikeYates.txt', text: readUserData('MikeYates.txt') });
+  it('parses valid picks', () => {
+    const participant = parseParticipantFile({ fileName: 'SamplePicks.txt', text: samplePicks });
 
-    expect(participant.displayName).toBe('Mike Yates');
+    expect(participant.displayName).toBe('Sample Picks');
     expect(participant.picks.round32).toHaveLength(32);
     expect(participant.picks.round16).toHaveLength(16);
     expect(participant.picks.round8).toHaveLength(8);
@@ -24,7 +122,7 @@ describe('participant parser', () => {
   });
 
   it('rejects impossible advancement picks', () => {
-    const invalidText = readUserData('MikeYates.txt').replace('# Round of 16\nGermany', '# Round of 16\nCanada');
+    const invalidText = samplePicks.replace('# Round of 16\nGermany', '# Round of 16\nCanada');
 
     expect(() => parseParticipantFile({ fileName: 'Invalid.txt', text: invalidText })).toThrow(/expected one of Germany or Paraguay/);
   });
