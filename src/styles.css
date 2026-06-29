@@ -403,9 +403,32 @@ h3 {
   }
 
   .leaderboard-row {
-    grid-template-columns: 52px minmax(120px, 1.2fr) 70px minmax(150px, 1fr) 110px;
-    min-width: 640px;
-    padding: 13px 16px;
+    grid-template-columns: 38px minmax(88px, 1fr) 50px minmax(104px, 1fr) 76px;
+    min-width: 460px;
+    gap: 7px;
+    padding: 12px 10px;
+    font-size: 0.88rem;
+  }
+
+  .leaderboard-head {
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+  }
+
+  .leaderboard-row .team-badge {
+    gap: 5px;
+  }
+
+  .leaderboard-row .flag {
+    width: 22px;
+    height: 16px;
+  }
+
+  .leaderboard-row .team-badge span:last-child,
+  .leaderboard-row .name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .bracket-scroll {

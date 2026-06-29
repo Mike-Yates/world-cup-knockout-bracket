@@ -1,17 +1,122 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { fallbackResults } from '../data/results';
 import { parseParticipantFile } from './participants';
 import { evaluateParticipant, rankParticipants } from './scoring';
 
-const readParticipant = (fileName: string) =>
-  parseParticipantFile({ fileName, text: readFileSync(path.join(process.cwd(), 'userData', fileName), 'utf8') });
+const baseRound32 = `# Round of 32
+Germany
+Paraguay
+
+France
+Sweden
+
+South Africa
+Canada
+
+Netherlands
+Morocco
+
+Portugal
+Croatia
+
+Spain
+Austria
+
+United States
+Bosnia and Herz.
+
+Belgium
+Senegal
+
+Brazil
+Japan
+
+Ivory Coast
+Norway
+
+Mexico
+Ecuador
+
+England
+DR Congo
+
+Argentina
+Cape Verde
+
+Australia
+Egypt
+
+Switzerland
+Algeria
+
+Colombia
+Ghana`;
+
+const correctCanadaPicks = `${baseRound32}
+
+# Round of 16
+Germany
+France
+
+Canada
+Morocco
+
+Portugal
+Spain
+
+United States
+Belgium
+
+Brazil
+Norway
+
+Mexico
+England
+
+Argentina
+Australia
+
+Algeria
+Colombia
+
+# Round of 8
+France
+Morocco
+
+Spain
+United States
+
+Brazil
+England
+
+Argentina
+Colombia
+
+# Round of 4
+France
+Spain
+
+Brazil
+Colombia
+
+# Round of 2
+France
+Brazil
+
+# Winner
+France`;
+
+const wrongSouthAfricaPicks = correctCanadaPicks.replace('\nCanada\nMorocco\n', '\nSouth Africa\nMorocco\n').replace(
+  '\nFrance\nMorocco\n\nSpain',
+  '\nFrance\nSouth Africa\n\nSpain',
+);
+
+const participantFromText = (fileName: string, text: string) => parseParticipantFile({ fileName, text });
 
 describe('scoring', () => {
   it('scores the known Canada 1-0 result and cascades total possible points', () => {
-    const mike = evaluateParticipant(readParticipant('MikeYates.txt'), fallbackResults);
-    const john = evaluateParticipant(readParticipant('JohnYates.txt'), fallbackResults);
+    const mike = evaluateParticipant(participantFromText('MikeYates.txt', correctCanadaPicks), fallbackResults);
+    const john = evaluateParticipant(participantFromText('JohnYates.txt', wrongSouthAfricaPicks), fallbackResults);
 
     expect(mike.currentPoints).toBe(1);
     expect(mike.totalPossible).toBe(57);
@@ -23,7 +128,10 @@ describe('scoring', () => {
   });
 
   it('ranks by points, then total possible, then name', () => {
-    const ranked = rankParticipants([readParticipant('JohnYates.txt'), readParticipant('MikeYates.txt')], fallbackResults);
+    const ranked = rankParticipants(
+      [participantFromText('JohnYates.txt', wrongSouthAfricaPicks), participantFromText('MikeYates.txt', correctCanadaPicks)],
+      fallbackResults,
+    );
 
     expect(ranked.map((score) => score.participant.displayName)).toEqual(['Mike Yates', 'John Yates']);
   });
