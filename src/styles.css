@@ -357,17 +357,33 @@ h3 {
 .side-left:not(.round-winner) .bracket-slot::after,
 .side-right:not(.round-winner) .bracket-slot::before {
   top: 50%;
-  width: var(--column-gap);
+  width: calc(var(--column-gap) * 0.5);
   height: 1px;
   background: var(--bracket-line);
 }
 
 .side-left:not(.round-winner) .bracket-slot::after {
-  right: calc(var(--column-gap) * -1);
+  right: calc(var(--column-gap) * -0.5);
 }
 
 .side-right:not(.round-winner) .bracket-slot::before {
-  left: calc(var(--column-gap) * -1);
+  left: calc(var(--column-gap) * -0.5);
+}
+
+.side-left .slot-round16::before,
+.side-right .slot-round16::after {
+  top: 50%;
+  width: calc(var(--column-gap) * 0.5);
+  height: 1px;
+  background: var(--bracket-line);
+}
+
+.side-left .slot-round16::before {
+  left: calc(var(--column-gap) * -0.5);
+}
+
+.side-right .slot-round16::after {
+  right: calc(var(--column-gap) * -0.5);
 }
 
 .side-left .slot-round8::before,
@@ -376,38 +392,43 @@ h3 {
 .side-right .slot-round8::after,
 .side-right .slot-round4::after,
 .side-right .slot-round2::after {
-  width: 1px;
-  background: var(--bracket-line);
+  width: calc(var(--column-gap) * 0.5);
 }
 
 .side-left .slot-round8::before,
 .side-left .slot-round4::before,
 .side-left .slot-round2::before {
-  left: calc((var(--column-gap) * -0.5) - 0.5px);
+  left: calc(var(--column-gap) * -0.5);
+  background:
+    linear-gradient(var(--bracket-line), var(--bracket-line)) left top / 1px 100% no-repeat,
+    linear-gradient(var(--bracket-line), var(--bracket-line)) left 50% / 100% 1px no-repeat;
 }
 
 .side-right .slot-round8::after,
 .side-right .slot-round4::after,
 .side-right .slot-round2::after {
-  right: calc((var(--column-gap) * -0.5) - 0.5px);
+  right: calc(var(--column-gap) * -0.5);
+  background:
+    linear-gradient(var(--bracket-line), var(--bracket-line)) right top / 1px 100% no-repeat,
+    linear-gradient(var(--bracket-line), var(--bracket-line)) right 50% / 100% 1px no-repeat;
 }
 
 .side-left .slot-round8::before,
 .side-right .slot-round8::after {
   top: calc(var(--slot) / 2);
-  bottom: calc(var(--slot) / 2);
+  bottom: calc((var(--slot) / 2) - 1px);
 }
 
 .side-left .slot-round4::before,
 .side-right .slot-round4::after {
   top: calc(var(--round8-slot) / 2);
-  bottom: calc(var(--round8-slot) / 2);
+  bottom: calc((var(--round8-slot) / 2) - 1px);
 }
 
 .side-left .slot-round2::before,
 .side-right .slot-round2::after {
   top: calc(var(--round4-slot) / 2);
-  bottom: calc(var(--round4-slot) / 2);
+  bottom: calc((var(--round4-slot) / 2) - 1px);
 }
 
 .match-card {
@@ -529,7 +550,7 @@ h3 {
     --slot: 74px;
     --slot-gap: 7px;
     --column-gap: 7px;
-    grid-template-columns: 188px repeat(4, 68px) 74px repeat(4, 68px) 188px;
+    grid-template-columns: max-content repeat(4, 68px) 74px repeat(4, 68px) max-content;
     gap: 7px;
     padding: 10px;
   }
@@ -587,6 +608,20 @@ h3 {
     display: none;
   }
 
+  .round-round32 .match-card {
+    width: 100%;
+    min-width: max-content;
+  }
+
+  .round-round32 .match-team {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .round-round32 .team-badge span:last-child {
+    white-space: nowrap;
+  }
+
   .status {
     flex-basis: 22px;
     width: 22px;
@@ -612,7 +647,7 @@ h3 {
     --slot: 64px;
     --slot-gap: 6px;
     --column-gap: 5px;
-    grid-template-columns: 158px repeat(4, 58px) 64px repeat(4, 58px) 158px;
+    grid-template-columns: max-content repeat(4, 58px) 64px repeat(4, 58px) max-content;
     gap: 5px;
     padding: 7px;
   }
