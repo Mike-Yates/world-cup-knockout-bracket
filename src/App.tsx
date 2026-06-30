@@ -5,6 +5,7 @@ import { initialTeamIds } from './data/bracket';
 import { fallbackResults } from './data/results';
 import { getFlagImageUrl, getTeam } from './data/teams';
 import { evaluationByPick, rankParticipants } from './lib/scoring';
+import { loadWorldCupWinnerOdds, type WinnerOdds } from './services/polymarketApi';
 import { loadApiResults, mergeResults } from './services/resultsApi';
 import type { Participant, ParticipantScore, PickEvaluation, PickRoundKey, ResultsByMatch, TeamId } from './types';
 
@@ -69,11 +70,28 @@ const TeamBadge = ({ teamId, muted = false, compactOnMobile = false }: { teamId:
   );
 };
 
-const Leaderboard = ({ scores }: { scores: ParticipantScore[] }) => (
+const formatProbability = (probability: number) => `${(probability * 100).toFixed(1)}%`;
+
+const Leaderboard = ({ scores, winnerOdds }: { scores: ParticipantScore[]; winnerOdds: WinnerOdds[] }) => (
   <section className="panel leaderboard-panel" aria-labelledby="leaderboard-title">
     <div className="section-heading">
-      <p className="eyebrow">Live Standings</p>
-      <h2 id="leaderboard-title">Leaderboard</h2>
+      <div>
+        <p className="eyebrow">Live Standings</p>
+        <h2 id="leaderboard-title">Leaderboard</h2>
+      </div>
+      {winnerOdds.length > 0 ? (
+        <div className="winner-odds-block">
+          <p className="winner-odds-title">Live Odds</p>
+          <ul className="winner-odds" aria-label="Polymarket World Cup winner odds">
+            {winnerOdds.map((odds) => (
+              <li key={odds.teamId ?? odds.teamName}>
+                <span>{odds.teamName}</span>
+                <strong>{formatProbability(odds.probability)}</strong>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </div>
 
     <div className="leaderboard-table" role="table" aria-label="Yates Cup leaderboard">
@@ -208,7 +226,7 @@ const ParticipantView = ({ score }: { score: ParticipantScore }) => {
   );
 };
 
-const HomeView = ({ scores }: { scores: ParticipantScore[] }) => (
+const HomeView = ({ scores, winnerOdds }: { scores: ParticipantScore[]; winnerOdds: WinnerOdds[] }) => (
   <main>
     <section className="hero">
       <div className="hero-title">
@@ -225,13 +243,14 @@ const HomeView = ({ scores }: { scores: ParticipantScore[] }) => (
       <img className="world-cup-trophy" src="/images/worldcup3.webp" alt="" aria-hidden="true" />
     </section>
 
-    <Leaderboard scores={scores} />
+    <Leaderboard scores={scores} winnerOdds={winnerOdds} />
   </main>
 );
 
 export default function App() {
   const [selectedParticipantId, setSelectedParticipantId] = useState(hashToParticipantId);
   const [results, setResults] = useState<ResultsByMatch>(fallbackResults);
+  const [winnerOdds, setWinnerOdds] = useState<WinnerOdds[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -242,6 +261,20 @@ export default function App() {
       }
 
       setResults(mergeResults(fallbackResults, apiResults));
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    loadWorldCupWinnerOdds(4).then((odds) => {
+      if (isMounted) {
+        setWinnerOdds(odds);
+      }
     });
 
     return () => {
@@ -270,7 +303,7 @@ export default function App() {
       {selectedScore ? (
         <ParticipantView score={selectedScore} />
       ) : (
-        <HomeView scores={leaderboard} />
+        <HomeView scores={leaderboard} winnerOdds={winnerOdds} />
       )}
     </div>
   );
