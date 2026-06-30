@@ -16,4 +16,29 @@ export const championPlayersByTeamId: Partial<Record<TeamId, { name: string; ima
     imageUrl: '/images/player-photos/england-kane.avif',
     credit: 'Harry Kane photo',
   },
+  'united-states': {
+    name: 'Christian Pulisic',
+    imageUrl: '/images/player-photos/united-states-pulisic.avif',
+    credit: 'Christian Pulisic photo',
+  },
+  spain: {
+    name: 'Lamine Yamal',
+    imageUrl: '/images/player-photos/spain-yamal.webp',
+    credit: 'Lamine Yamal photo',
+  },
+  brazil: {
+    name: 'Brazil stars',
+    imageUrl: '/images/player-photos/brazil-stars.webp',
+    credit: 'Brazil players photo',
+  },
+  portugal: {
+    name: 'Cristiano Ronaldo',
+    imageUrl: '/images/player-photos/portugal-ronaldo.webp',
+    credit: 'Cristiano Ronaldo photo',
+  },
+  norway: {
+    name: 'Erling Haaland',
+    imageUrl: '/images/player-photos/norway-haaland.webp',
+    credit: 'Erling Haaland photo',
+  },
 };
