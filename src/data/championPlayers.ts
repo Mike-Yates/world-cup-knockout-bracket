@@ -41,4 +41,14 @@ export const championPlayersByTeamId: Partial<Record<TeamId, { name: string; ima
     imageUrl: '/images/player-photos/norway-haaland.webp',
     credit: 'Erling Haaland photo',
   },
+  morocco: {
+    name: 'Morocco stars',
+    imageUrl: '/images/player-photos/morocco-stars.avif',
+    credit: 'Morocco players photo',
+  },
+  japan: {
+    name: 'Kaoru Mitoma',
+    imageUrl: '/images/player-photos/japan-mitoma.jpg',
+    credit: 'Kaoru Mitoma photo',
+  },
 };
