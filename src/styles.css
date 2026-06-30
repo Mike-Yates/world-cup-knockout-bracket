@@ -154,6 +154,10 @@ h3 {
   padding-left: 2px;
 }
 
+.world-cup-trophy {
+  display: none;
+}
+
 .score-summary {
   display: grid;
   gap: 8px;
@@ -519,18 +523,40 @@ h3 {
     gap: 8px;
   }
 
-  .hero,
   .score-summary {
     grid-template-columns: 1fr;
   }
 
   .hero {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 14px;
     padding: 22px;
   }
 
+  .participant-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-title {
+    grid-column: 1 / -1;
+  }
+
   .scoring-list {
+    grid-column: 1;
     justify-self: start;
     min-width: 0;
+  }
+
+  .world-cup-trophy {
+    display: block;
+    grid-column: 2;
+    justify-self: end;
+    align-self: center;
+    width: clamp(74px, 20vw, 104px);
+    max-height: 176px;
+    object-fit: contain;
+    border-radius: 10px;
+    filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.42));
   }
 
   .leaderboard-row {

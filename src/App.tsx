@@ -222,6 +222,7 @@ const HomeView = ({ scores }: { scores: ParticipantScore[] }) => (
         <li>Semifinals: 4 points</li>
         <li>Finals: 5 points</li>
       </ul>
+      <img className="world-cup-trophy" src="/images/worldcup3.webp" alt="" aria-hidden="true" />
     </section>
 
     <Leaderboard scores={scores} />
