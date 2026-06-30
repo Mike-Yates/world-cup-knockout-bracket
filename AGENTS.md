@@ -6,7 +6,16 @@
 - Dev server: `npm run dev` (`predev` regenerates participant data, Vite binds `0.0.0.0`).
 - Build: `npm run build` (`prebuild` regenerates participant data, then `tsc -b && vite build`).
 - Tests: `npm test`; focused test: `npm test -- src/lib/scoring.test.ts`.
+- Refresh cached final results: `npm run update:results`.
 - No lint or formatter script is configured.
+
+## Test Deploys
+- When the user asks to implement a visible change, deploy it for verification unless they explicitly say not to deploy.
+- Preferred flow is local build, then sync `dist/` to EC2/nginx; do not build on the server for normal test deploys.
+- Include `npm run update:results` before the test build so cached results are refreshed for the deployed bundle.
+- Test/deploy command; source local deploy values from ignored `.env` first:
+  `. ./.env && npm test && npm run update:results && npm run build && rsync -az --delete -e "ssh -i $YATESCUP_SSH_KEY -o BatchMode=yes" "dist/" "$YATESCUP_USER@$YATESCUP_HOST:/tmp/yatescup-dist/" && ssh -i "$YATESCUP_SSH_KEY" -o BatchMode=yes "$YATESCUP_USER@$YATESCUP_HOST" "sudo rsync -az --delete /tmp/yatescup-dist/ \"$YATESCUP_WEB_ROOT/\" && sudo nginx -t && sudo systemctl reload nginx"`
+- After deploying, verify `https://yatescup.com` responds and references the newly built asset names.
 
 ## Data Flow
 - Participant picks live in `userData/*.txt`; filenames become display names and ids via `src/lib/participants.ts`.
@@ -23,5 +32,5 @@
 ## Source Boundaries
 - App entrypoint is `src/main.tsx`; most UI is currently in `src/App.tsx` with styles in `src/styles.css`.
 - Bracket shape and match ids are generated from `src/data/bracket.ts`; avoid hardcoding duplicate match topology elsewhere.
-- Static deployment target is `dist/` to S3/CloudFront for `yatescup.com`.
-- Both `.ts` and `.js` Vite/Vitest config files exist and are equivalent; if config changes, update or intentionally remove the duplicate instead of changing only one.
+- Static deployment target is `dist/` served by EC2/nginx for `yatescup.com`; hostnames, key paths, and server paths are stored in `.env`.
+- Public image assets live under `public/images/`; champion-player mappings live in `src/data/championPlayers.ts`.

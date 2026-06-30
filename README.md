@@ -1,6 +1,6 @@
 # Yates Cup
 
-Public read-only World Cup knockout bracket leaderboard for `yatescup.com`.
+Public read-only 2026 World Cup knockout bracket leaderboard for `https://yatescup.com`.
 
 ## Local Development
 
@@ -20,6 +20,18 @@ Run tests:
 
 ```bash
 npm test
+```
+
+Run one focused test file:
+
+```bash
+npm test -- src/lib/scoring.test.ts
+```
+
+Refresh cached final results:
+
+```bash
+npm run update:results
 ```
 
 Build the static site:
@@ -47,7 +59,9 @@ Expected file sections:
 - `# Round of 2`: 2 picks advancing from the semifinals.
 - `# Winner`: champion pick.
 
-Before dev/build, `npm run generate:data` parses and validates these files into `src/data/generated/participants.json`.
+Before dev/build, `npm run generate:data` parses and validates these files into `src/data/generated/participants.json`. Empty participant files are skipped.
+
+Team names are normalized through `src/data/teams.ts`. Add aliases there when a participant file or API payload uses a different country name.
 
 ## Scoring
 
@@ -60,24 +74,47 @@ Before dev/build, `npm run generate:data` parses and validates these files into 
 Leaderboard sorting:
 
 1. Current points, highest first.
-2. Total Possible, highest first.
+2. Total possible, highest first.
 3. Name, alphabetical.
 
-## Results
+Scoring and tie-breakers live in `src/lib/scoring.ts`.
 
-The app loads cached final results from `src/data/results.ts`, then attempts to fetch final results from a free public API provider in the browser. API results are only used when the provider marks the match final.
+## Results And Odds
 
-Refresh cached final results before a redeploy:
+Cached final match results live in `src/data/results.ts`. Refresh them with:
 
 ```bash
 npm run update:results
 ```
 
-## AWS Deployment Target
+At browser runtime, `src/services/resultsApi.ts` also attempts best-effort live result fetches from ESPN first and TheSportsDB as a fallback. API results are only used for completed matches.
 
-The production target is a static AWS deployment:
+Live World Cup winner odds are fetched in the browser from Polymarket through `src/services/polymarketApi.ts`. If Polymarket fails or returns no usable data, the odds area stays empty; there are no default countries or percentages.
 
-- Build with `npm run build`.
-- Upload `dist/` to S3.
-- Serve through CloudFront.
-- Attach `yatescup.com` through DNS and AWS Certificate Manager.
+## Source Layout
+
+- `src/main.tsx`: app entrypoint.
+- `src/App.tsx`: main UI, leaderboard, bracket views, result/odds loading.
+- `src/styles.css`: site styling and responsive layout.
+- `src/data/bracket.ts`: canonical bracket shape and match IDs.
+- `src/data/teams.ts`: team metadata, aliases, FIFA codes, and country codes.
+- `src/data/championPlayers.ts`: champion pick photo mappings.
+- `scripts/generate-participants.ts`: generates `src/data/generated/participants.json`.
+- `scripts/update-results.ts`: refreshes cached final results.
+- `public/images/`: static image assets served by Vite.
+
+TypeScript files are the source of truth. The repo should not contain compiled `.js` sidecars for `src/`, `scripts/`, or config files; `tsconfig.*.json` uses `noEmit`.
+
+## Test Deployment
+
+Visible changes should be deployed for verification unless explicitly skipped. The deployment flow is local build, then sync `dist/` to EC2/nginx.
+
+Fill in the local `.env` file with deploy values.
+
+Run:
+
+```bash
+. ./.env && npm test && npm run update:results && npm run build && rsync -az --delete -e "ssh -i $YATESCUP_SSH_KEY -o BatchMode=yes" "dist/" "$YATESCUP_USER@$YATESCUP_HOST:/tmp/yatescup-dist/" && ssh -i "$YATESCUP_SSH_KEY" -o BatchMode=yes "$YATESCUP_USER@$YATESCUP_HOST" "sudo rsync -az --delete /tmp/yatescup-dist/ \"$YATESCUP_WEB_ROOT/\" && sudo nginx -t && sudo systemctl reload nginx"
+```
+
+After deploying, verify `https://yatescup.com` responds and references the newly built asset names.
