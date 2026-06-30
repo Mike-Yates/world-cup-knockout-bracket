@@ -51,4 +51,9 @@ export const championPlayersByTeamId: Partial<Record<TeamId, { name: string; ima
     imageUrl: '/images/player-photos/japan-mitoma.jpg',
     credit: 'Kaoru Mitoma photo',
   },
+  netherlands: {
+    name: 'Netherlands stars',
+    imageUrl: '/images/player-photos/netherlands-stars.avif',
+    credit: 'Netherlands players photo',
+  },
 };

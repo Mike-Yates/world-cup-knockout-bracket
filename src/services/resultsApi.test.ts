@@ -1,5 +1,24 @@
-import { describe, expect, it } from 'vitest';
-import { normalizeCanadaSportsDbResult, normalizeEspnResult, normalizeSportsDbResult, resolveMatchTeamIds } from './resultsApi';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { rankParticipants } from '../lib/scoring';
+import type { Participant } from '../types';
+import { loadApiResults, mergeResults, normalizeCanadaSportsDbResult, normalizeEspnResult, normalizeSportsDbResult, resolveMatchTeamIds } from './resultsApi';
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+const participantWithFirstPick = (id: string, displayName: string, firstPick: string): Participant => ({
+  id,
+  displayName,
+  picks: {
+    round32: [],
+    round16: [firstPick, 'france', 'canada', 'netherlands', 'portugal', 'spain', 'united-states', 'belgium', 'brazil', 'norway', 'mexico', 'england', 'argentina', 'egypt', 'switzerland', 'colombia'],
+    round8: ['france', 'netherlands', 'spain', 'belgium', 'brazil', 'england', 'argentina', 'colombia'],
+    round4: ['france', 'spain', 'brazil', 'argentina'],
+    round2: ['france', 'argentina'],
+    winner: ['france'],
+  },
+});
 
 describe('results API normalization', () => {
   it('normalizes a Canada 1-0 result from a public API shape', () => {
@@ -120,6 +139,48 @@ describe('results API normalization', () => {
       winnerTeamId: 'paraguay',
       source: 'api',
     });
+  });
+
+  it('loads uncached ESPN finals so the live leaderboard can update before redeploy', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input);
+        const payload = url.includes('site.api.espn.com')
+          ? {
+              events: [
+                {
+                  season: { year: 2026 },
+                  competitions: [
+                    {
+                      status: { type: { completed: true, state: 'post', name: 'STATUS_FINAL_PEN', detail: 'FT-Pens' } },
+                      competitors: [
+                        { homeAway: 'home', score: '1', winner: false, advance: false, team: { displayName: 'Germany' } },
+                        { homeAway: 'away', score: '1', winner: true, advance: true, team: { displayName: 'Paraguay' } },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            }
+          : { event: null };
+
+        return new Response(JSON.stringify(payload), { status: 200, headers: { 'content-type': 'application/json' } });
+      }),
+    );
+
+    const apiResults = await loadApiResults({});
+    const results = mergeResults({}, apiResults);
+    const leaderboard = rankParticipants(
+      [participantWithFirstPick('germany-pick', 'Germany Pick', 'germany'), participantWithFirstPick('paraguay-pick', 'Paraguay Pick', 'paraguay')],
+      results,
+    );
+
+    expect(apiResults['r32-01']?.winnerTeamId).toBe('paraguay');
+    expect(leaderboard.map((score) => [score.participant.displayName, score.currentPoints])).toEqual([
+      ['Paraguay Pick', 1],
+      ['Germany Pick', 0],
+    ]);
   });
 
   it('ignores non-World Cup matches for the same teams', () => {
