@@ -1,0 +1,262 @@
+{
+  "source": "ESPN fifa.world scoreboard, queried 2026-07-03",
+  "timezone": "UTC",
+  "pollDelayMinutesAfterScheduledStart": 110,
+  "autoUpdateStopsAtUtc": "2026-07-21T00:00:00Z",
+  "notes": [
+    "gameNumber is chronological kickoff order for the 31 scored bracket matches.",
+    "matchId is this app's internal match id from src/data/bracket.ts.",
+    "ESPN event 760516 is the third-place match and is intentionally excluded.",
+    "autoUpdateStopsAtUtc is the end of the day after the World Cup final in UTC."
+  ],
+  "games": [
+    {
+      "gameNumber": 1,
+      "matchId": "r32-03",
+      "espnEventId": "760486",
+      "scheduledStartUtc": "2026-06-28T19:00:00Z",
+      "pollStartsAtUtc": "2026-06-28T20:50:00Z",
+      "label": "Round of 32: South Africa vs Canada"
+    },
+    {
+      "gameNumber": 2,
+      "matchId": "r32-09",
+      "espnEventId": "760487",
+      "scheduledStartUtc": "2026-06-29T17:00:00Z",
+      "pollStartsAtUtc": "2026-06-29T18:50:00Z",
+      "label": "Round of 32: Brazil vs Japan"
+    },
+    {
+      "gameNumber": 3,
+      "matchId": "r32-01",
+      "espnEventId": "760489",
+      "scheduledStartUtc": "2026-06-29T20:30:00Z",
+      "pollStartsAtUtc": "2026-06-29T22:20:00Z",
+      "label": "Round of 32: Germany vs Paraguay"
+    },
+    {
+      "gameNumber": 4,
+      "matchId": "r32-04",
+      "espnEventId": "760488",
+      "scheduledStartUtc": "2026-06-30T01:00:00Z",
+      "pollStartsAtUtc": "2026-06-30T02:50:00Z",
+      "label": "Round of 32: Netherlands vs Morocco"
+    },
+    {
+      "gameNumber": 5,
+      "matchId": "r32-10",
+      "espnEventId": "760490",
+      "scheduledStartUtc": "2026-06-30T17:00:00Z",
+      "pollStartsAtUtc": "2026-06-30T18:50:00Z",
+      "label": "Round of 32: Ivory Coast vs Norway"
+    },
+    {
+      "gameNumber": 6,
+      "matchId": "r32-02",
+      "espnEventId": "760492",
+      "scheduledStartUtc": "2026-06-30T21:00:00Z",
+      "pollStartsAtUtc": "2026-06-30T22:50:00Z",
+      "label": "Round of 32: France vs Sweden"
+    },
+    {
+      "gameNumber": 7,
+      "matchId": "r32-11",
+      "espnEventId": "760491",
+      "scheduledStartUtc": "2026-07-01T02:00:00Z",
+      "pollStartsAtUtc": "2026-07-01T03:50:00Z",
+      "label": "Round of 32: Mexico vs Ecuador"
+    },
+    {
+      "gameNumber": 8,
+      "matchId": "r32-12",
+      "espnEventId": "760495",
+      "scheduledStartUtc": "2026-07-01T16:00:00Z",
+      "pollStartsAtUtc": "2026-07-01T17:50:00Z",
+      "label": "Round of 32: England vs DR Congo"
+    },
+    {
+      "gameNumber": 9,
+      "matchId": "r32-08",
+      "espnEventId": "760493",
+      "scheduledStartUtc": "2026-07-01T20:00:00Z",
+      "pollStartsAtUtc": "2026-07-01T21:50:00Z",
+      "label": "Round of 32: Belgium vs Senegal"
+    },
+    {
+      "gameNumber": 10,
+      "matchId": "r32-07",
+      "espnEventId": "760494",
+      "scheduledStartUtc": "2026-07-02T00:00:00Z",
+      "pollStartsAtUtc": "2026-07-02T01:50:00Z",
+      "label": "Round of 32: United States vs Bosnia and Herz."
+    },
+    {
+      "gameNumber": 11,
+      "matchId": "r32-06",
+      "espnEventId": "760497",
+      "scheduledStartUtc": "2026-07-02T19:00:00Z",
+      "pollStartsAtUtc": "2026-07-02T20:50:00Z",
+      "label": "Round of 32: Spain vs Austria"
+    },
+    {
+      "gameNumber": 12,
+      "matchId": "r32-05",
+      "espnEventId": "760496",
+      "scheduledStartUtc": "2026-07-02T23:00:00Z",
+      "pollStartsAtUtc": "2026-07-03T00:50:00Z",
+      "label": "Round of 32: Portugal vs Croatia"
+    },
+    {
+      "gameNumber": 13,
+      "matchId": "r32-15",
+      "espnEventId": "760498",
+      "scheduledStartUtc": "2026-07-03T03:00:00Z",
+      "pollStartsAtUtc": "2026-07-03T04:50:00Z",
+      "label": "Round of 32: Switzerland vs Algeria"
+    },
+    {
+      "gameNumber": 14,
+      "matchId": "r32-14",
+      "espnEventId": "760499",
+      "scheduledStartUtc": "2026-07-03T18:00:00Z",
+      "pollStartsAtUtc": "2026-07-03T19:50:00Z",
+      "label": "Round of 32: Australia vs Egypt"
+    },
+    {
+      "gameNumber": 15,
+      "matchId": "r32-13",
+      "espnEventId": "760500",
+      "scheduledStartUtc": "2026-07-03T22:00:00Z",
+      "pollStartsAtUtc": "2026-07-03T23:50:00Z",
+      "label": "Round of 32: Argentina vs Cape Verde"
+    },
+    {
+      "gameNumber": 16,
+      "matchId": "r32-16",
+      "espnEventId": "760501",
+      "scheduledStartUtc": "2026-07-04T01:30:00Z",
+      "pollStartsAtUtc": "2026-07-04T03:20:00Z",
+      "label": "Round of 32: Colombia vs Ghana"
+    },
+    {
+      "gameNumber": 17,
+      "matchId": "r16-02",
+      "espnEventId": "760502",
+      "scheduledStartUtc": "2026-07-04T17:00:00Z",
+      "pollStartsAtUtc": "2026-07-04T18:50:00Z",
+      "label": "Round of 16 Match 2"
+    },
+    {
+      "gameNumber": 18,
+      "matchId": "r16-01",
+      "espnEventId": "760503",
+      "scheduledStartUtc": "2026-07-04T21:00:00Z",
+      "pollStartsAtUtc": "2026-07-04T22:50:00Z",
+      "label": "Round of 16 Match 1"
+    },
+    {
+      "gameNumber": 19,
+      "matchId": "r16-05",
+      "espnEventId": "760504",
+      "scheduledStartUtc": "2026-07-05T20:00:00Z",
+      "pollStartsAtUtc": "2026-07-05T21:50:00Z",
+      "label": "Round of 16 Match 5"
+    },
+    {
+      "gameNumber": 20,
+      "matchId": "r16-06",
+      "espnEventId": "760505",
+      "scheduledStartUtc": "2026-07-06T00:00:00Z",
+      "pollStartsAtUtc": "2026-07-06T01:50:00Z",
+      "label": "Round of 16 Match 6"
+    },
+    {
+      "gameNumber": 21,
+      "matchId": "r16-03",
+      "espnEventId": "760506",
+      "scheduledStartUtc": "2026-07-06T19:00:00Z",
+      "pollStartsAtUtc": "2026-07-06T20:50:00Z",
+      "label": "Round of 16 Match 3"
+    },
+    {
+      "gameNumber": 22,
+      "matchId": "r16-04",
+      "espnEventId": "760507",
+      "scheduledStartUtc": "2026-07-07T00:00:00Z",
+      "pollStartsAtUtc": "2026-07-07T01:50:00Z",
+      "label": "Round of 16 Match 4"
+    },
+    {
+      "gameNumber": 23,
+      "matchId": "r16-07",
+      "espnEventId": "760509",
+      "scheduledStartUtc": "2026-07-07T16:00:00Z",
+      "pollStartsAtUtc": "2026-07-07T17:50:00Z",
+      "label": "Round of 16 Match 7"
+    },
+    {
+      "gameNumber": 24,
+      "matchId": "r16-08",
+      "espnEventId": "760508",
+      "scheduledStartUtc": "2026-07-07T20:00:00Z",
+      "pollStartsAtUtc": "2026-07-07T21:50:00Z",
+      "label": "Round of 16 Match 8"
+    },
+    {
+      "gameNumber": 25,
+      "matchId": "qf-01",
+      "espnEventId": "760510",
+      "scheduledStartUtc": "2026-07-09T20:00:00Z",
+      "pollStartsAtUtc": "2026-07-09T21:50:00Z",
+      "label": "Quarterfinal Match 1"
+    },
+    {
+      "gameNumber": 26,
+      "matchId": "qf-03",
+      "espnEventId": "760511",
+      "scheduledStartUtc": "2026-07-10T19:00:00Z",
+      "pollStartsAtUtc": "2026-07-10T20:50:00Z",
+      "label": "Quarterfinal Match 3"
+    },
+    {
+      "gameNumber": 27,
+      "matchId": "qf-02",
+      "espnEventId": "760512",
+      "scheduledStartUtc": "2026-07-11T21:00:00Z",
+      "pollStartsAtUtc": "2026-07-11T22:50:00Z",
+      "label": "Quarterfinal Match 2"
+    },
+    {
+      "gameNumber": 28,
+      "matchId": "qf-04",
+      "espnEventId": "760513",
+      "scheduledStartUtc": "2026-07-12T01:00:00Z",
+      "pollStartsAtUtc": "2026-07-12T02:50:00Z",
+      "label": "Quarterfinal Match 4"
+    },
+    {
+      "gameNumber": 29,
+      "matchId": "sf-01",
+      "espnEventId": "760514",
+      "scheduledStartUtc": "2026-07-14T19:00:00Z",
+      "pollStartsAtUtc": "2026-07-14T20:50:00Z",
+      "label": "Semifinal Match 1"
+    },
+    {
+      "gameNumber": 30,
+      "matchId": "sf-02",
+      "espnEventId": "760515",
+      "scheduledStartUtc": "2026-07-15T19:00:00Z",
+      "pollStartsAtUtc": "2026-07-15T20:50:00Z",
+      "label": "Semifinal Match 2"
+    },
+    {
+      "gameNumber": 31,
+      "matchId": "final",
+      "espnEventId": "760517",
+      "scheduledStartUtc": "2026-07-19T19:00:00Z",
+      "pollStartsAtUtc": "2026-07-19T20:50:00Z",
+      "label": "World Cup Final"
+    }
+  ]
+}

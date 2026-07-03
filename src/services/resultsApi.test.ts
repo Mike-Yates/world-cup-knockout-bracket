@@ -183,6 +183,56 @@ describe('results API normalization', () => {
     ]);
   });
 
+  it('does not treat the third-place match as the bracket final', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input);
+        const payload = url.includes('site.api.espn.com')
+          ? {
+              events: [
+                {
+                  season: { year: 2026 },
+                  competitions: [
+                    {
+                      status: { type: { completed: true, state: 'post', name: 'STATUS_FULL_TIME' } },
+                      competitors: [
+                        { homeAway: 'home', score: '2', winner: true, team: { displayName: 'Brazil' } },
+                        { homeAway: 'away', score: '1', winner: false, team: { displayName: 'Spain' } },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            }
+          : { event: null };
+
+        return new Response(JSON.stringify(payload), { status: 200, headers: { 'content-type': 'application/json' } });
+      }),
+    );
+
+    const apiResults = await loadApiResults({
+      'sf-01': {
+        matchId: 'sf-01',
+        status: 'final',
+        homeScore: 1,
+        awayScore: 0,
+        winnerTeamId: 'france',
+        source: 'test',
+      },
+      'sf-02': {
+        matchId: 'sf-02',
+        status: 'final',
+        homeScore: 2,
+        awayScore: 1,
+        winnerTeamId: 'argentina',
+        source: 'test',
+      },
+    });
+
+    expect(apiResults.final).toBeUndefined();
+  });
+
   it('ignores non-World Cup matches for the same teams', () => {
     const result = normalizeSportsDbResult(
       {

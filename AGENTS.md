@@ -7,6 +7,7 @@
 - Build: `npm run build` (`prebuild` regenerates participant data, then `tsc -b && vite build`).
 - Tests: `npm test`; focused test: `npm test -- src/lib/scoring.test.ts`.
 - Refresh cached final results: `npm run update:results`.
+- Manual server update/deploy: `./update.sh`.
 - No lint or formatter script is configured.
 
 ## Test Deploys
@@ -26,6 +27,7 @@
 ## Results And Scoring
 - Cached final results are in `src/data/results.ts`; `npm run update:results` fetches final API results and rewrites that file.
 - Browser runtime also calls ESPN/ThesportsDB in `src/services/resultsApi.ts`; API results are best-effort and only used for completed matches.
+- Timed server-side result refresh lives in `ops/auto-update/`; `npm run auto:update` uses the UTC knockout schedule to avoid API calls until 110 minutes after scheduled kickoff and only polls while cached results are below the expected count.
 - Scoring and tie-breakers live in `src/lib/scoring.ts`: points, then total possible, then display name.
 - Polymarket winner odds are browser-fetched from `src/services/polymarketApi.ts`; failures intentionally return an empty list.
 
