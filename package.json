@@ -13,7 +13,8 @@
     "test:watch": "vitest",
     "auto:update": "tsx ops/auto-update/run-if-result-due.ts",
     "generate:data": "tsx scripts/generate-participants.ts",
-    "update:results": "tsx scripts/update-results.ts"
+    "update:results": "tsx scripts/update-results.ts",
+    "update:elo": "tsx scripts/update-team-elo.ts"
   },
   "dependencies": {
     "react": "^19.0.0",

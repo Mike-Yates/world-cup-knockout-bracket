@@ -84,6 +84,10 @@ button {
   grid-template-columns: 1fr;
 }
 
+.prediction-hero {
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.45fr);
+}
+
 .eyebrow {
   margin: 0 0 8px;
   color: var(--gold);
@@ -168,7 +172,23 @@ h3 {
   background: rgba(0, 0, 0, 0.22);
 }
 
+.prediction-summary {
+  display: grid;
+  gap: 10px;
+  min-width: 260px;
+  padding: 18px;
+  border: 1px solid var(--gold-soft);
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
 .score-summary span {
+  color: var(--muted);
+}
+
+.prediction-summary span {
+  display: grid;
+  gap: 4px;
   color: var(--muted);
 }
 
@@ -188,6 +208,11 @@ h3 {
 .score-summary strong {
   color: #fff;
   font-size: 1.55rem;
+}
+
+.prediction-summary strong {
+  color: #fff;
+  font-size: 1.35rem;
 }
 
 .champion-player-photo {
@@ -256,6 +281,11 @@ h3 {
   overflow-x: auto;
 }
 
+.prediction-table {
+  display: grid;
+  overflow-x: auto;
+}
+
 .leaderboard-row {
   display: grid;
   grid-template-columns: 70px minmax(140px, 1.4fr) 90px minmax(170px, 1fr) 130px;
@@ -270,7 +300,25 @@ h3 {
   text-align: left;
 }
 
+.prediction-row {
+  display: grid;
+  grid-template-columns: 70px minmax(150px, 1fr) 120px 120px;
+  align-items: center;
+  min-width: 560px;
+  gap: 14px;
+  padding: 15px 22px;
+  border-top: 1px solid var(--line);
+}
+
 .leaderboard-head {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.prediction-head {
   color: var(--muted);
   font-size: 0.74rem;
   font-weight: 900;
@@ -298,6 +346,11 @@ h3 {
 
 .rank,
 .possible {
+  color: var(--gold);
+  font-weight: 900;
+}
+
+.prediction-elo {
   color: var(--gold);
   font-weight: 900;
 }
@@ -582,6 +635,12 @@ h3 {
     grid-template-columns: 1fr;
   }
 
+  .prediction-summary {
+    min-width: 0;
+    padding: 12px;
+    border-radius: 14px;
+  }
+
   .hero {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 14px;
@@ -589,6 +648,10 @@ h3 {
   }
 
   .participant-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .prediction-hero {
     grid-template-columns: 1fr;
   }
 
@@ -631,11 +694,28 @@ h3 {
     font-size: 0.88rem;
   }
 
+  .prediction-row {
+    grid-template-columns: 28px minmax(112px, 1fr) 64px 64px;
+    min-width: 0;
+    gap: 6px;
+    padding: 12px 8px;
+    font-size: 0.88rem;
+  }
+
   .leaderboard-row > span {
     min-width: 0;
   }
 
+  .prediction-row > span {
+    min-width: 0;
+  }
+
   .leaderboard-head {
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+  }
+
+  .prediction-head {
     font-size: 0.62rem;
     letter-spacing: 0.06em;
   }
@@ -669,7 +749,8 @@ h3 {
   }
 
   .leaderboard-row .team-badge span:last-child,
-  .leaderboard-row .name {
+  .leaderboard-row .name,
+  .prediction-row .name {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

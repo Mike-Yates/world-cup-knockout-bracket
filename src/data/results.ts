@@ -121,4 +121,12 @@ export const fallbackResults: ResultsByMatch = {
     winnerTeamId: 'switzerland',
     source: 'api',
   },
+  'r32-16': {
+    matchId: 'r32-16',
+    status: 'final',
+    homeScore: 1,
+    awayScore: 0,
+    winnerTeamId: 'colombia',
+    source: 'api',
+  },
 };

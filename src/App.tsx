@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import generatedParticipants from './data/generated/participants.json';
 import { championPlayersByTeamId } from './data/championPlayers';
 import { initialTeamIds } from './data/bracket';
 import { fallbackResults } from './data/results';
 import { getFlagImageUrl, getTeam } from './data/teams';
 import { evaluationByPick, rankParticipants } from './lib/scoring';
+import { PredictionsView } from './predictions/PredictionsView';
+import { calculatePredictionChances } from './predictions/probabilities';
 import { loadWorldCupWinnerOdds, type WinnerOdds } from './services/polymarketApi';
 import { loadApiResults, mergeResults } from './services/resultsApi';
 import type { Participant, ParticipantScore, PickEvaluation, PickRoundKey, ResultsByMatch, TeamId } from './types';
@@ -248,6 +250,7 @@ const HomeView = ({ scores, winnerOdds }: { scores: ParticipantScore[]; winnerOd
 );
 
 export default function App() {
+  const isPredictionsPath = window.location.pathname.replace(/\/+$/, '') === '/predictions';
   const [selectedParticipantId, setSelectedParticipantId] = useState(hashToParticipantId);
   const [results, setResults] = useState<ResultsByMatch>(fallbackResults);
   const [winnerOdds, setWinnerOdds] = useState<WinnerOdds[]>([]);
@@ -290,17 +293,20 @@ export default function App() {
 
   const leaderboard = rankParticipants(participants, results);
   const selectedScore = selectedParticipantId ? leaderboard.find((score) => score.participant.id === selectedParticipantId) : undefined;
+  const predictionResult = useMemo(() => (isPredictionsPath ? calculatePredictionChances(participants, results) : undefined), [isPredictionsPath, results]);
 
   return (
     <div className="app-shell">
       <header className="site-header">
-        <button className="brand" onClick={clearHash}>
+        <button className="brand" onClick={isPredictionsPath ? () => (window.location.href = '/') : clearHash}>
           Yates Cup
         </button>
         <span>World Cup Bracket Challenge</span>
       </header>
 
-      {selectedScore ? (
+      {predictionResult ? (
+        <PredictionsView predictionResult={predictionResult} />
+      ) : selectedScore ? (
         <ParticipantView score={selectedScore} />
       ) : (
         <HomeView scores={leaderboard} winnerOdds={winnerOdds} />
