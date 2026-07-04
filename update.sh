@@ -17,21 +17,6 @@ AUTO_UPDATE_USER="${YATESCUP_AUTO_UPDATE_USER:-$(id -un)}"
 AUTO_UPDATE_HOME="$(getent passwd "$AUTO_UPDATE_USER" | cut -d: -f6)"
 SYSTEMD_DIR="${YATESCUP_SYSTEMD_DIR:-/etc/systemd/system}"
 
-reset_to_remote() {
-  local branch upstream remote
-
-  branch="$(git branch --show-current)"
-  upstream="$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null || true)"
-  if [ -z "$upstream" ]; then
-    upstream="origin/$branch"
-  fi
-
-  remote="${upstream%%/*}"
-  git fetch --prune "$remote"
-  echo "Resetting local working tree to $upstream before deployment."
-  git reset --hard "$upstream"
-}
-
 render_systemd_template() {
   local source_file="$1"
   local target_file="$2"
@@ -77,7 +62,7 @@ ensure_auto_update_timer() {
   fi
 }
 
-reset_to_remote
+git pull --ff-only
 npm install
 ensure_auto_update_timer
 npm run update:results

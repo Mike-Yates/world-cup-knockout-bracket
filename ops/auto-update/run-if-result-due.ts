@@ -104,38 +104,6 @@ const run = (command: string, args: string[]) => {
   }
 };
 
-const readCommandOutput = (command: string, args: string[], allowFailure = false) => {
-  const result = spawnSync(command, args, { cwd: projectRoot, encoding: 'utf8' });
-  if (result.status !== 0) {
-    if (allowFailure) {
-      return undefined;
-    }
-
-    throw new Error(`Command failed: ${[command, ...args].join(' ')}`);
-  }
-
-  return result.stdout.trim();
-};
-
-const getUpstreamRef = () => {
-  const upstream = readCommandOutput('git', ['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{u}'], true);
-  if (upstream) {
-    return upstream;
-  }
-
-  const branch = readCommandOutput('git', ['branch', '--show-current']);
-  return `origin/${branch}`;
-};
-
-const resetToRemote = () => {
-  const upstream = getUpstreamRef();
-  const remote = upstream.split('/')[0] || 'origin';
-
-  run('git', ['fetch', '--prune', remote]);
-  console.log(`Resetting local working tree to ${upstream} before deployment.`);
-  run('git', ['reset', '--hard', upstream]);
-};
-
 const disableTimerAndExit = (schedule: KnockoutSchedule, nowMs: number) => {
   const timerName = process.env.YATESCUP_AUTO_UPDATE_TIMER_NAME || 'yatescup-auto-update.timer';
   console.log(`Auto-update stop time reached: now=${new Date(nowMs).toISOString()}, stop=${schedule.autoUpdateStopsAtUtc}`);
@@ -189,7 +157,7 @@ if (!shouldFetchResults(nowMs)) {
 }
 
 if (shouldPull) {
-  resetToRemote();
+  run('git', ['pull', '--ff-only']);
   run('npm', ['install']);
 
   if (!shouldFetchResults(nowMs)) {
