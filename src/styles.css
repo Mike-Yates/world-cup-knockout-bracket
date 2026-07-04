@@ -553,6 +553,20 @@ h3 {
   background: var(--red);
 }
 
+@media (min-width: 821px) {
+  .bracket-scroll {
+    grid-template-columns: 270px repeat(9, 108px) 270px;
+  }
+
+  .bracket-shell .round-column:not(.round-round32) .team-name {
+    display: none;
+  }
+
+  .bracket-shell .round-column:not(.round-round32) .team-badge {
+    gap: 0;
+  }
+}
+
 @media (max-width: 820px) {
   .app-shell {
     padding: 12px;
