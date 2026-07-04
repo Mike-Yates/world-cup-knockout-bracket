@@ -183,6 +183,16 @@ describe('results API normalization', () => {
     ]);
   });
 
+  it('requests the full knockout date range so older completed ESPN matches remain cacheable', async () => {
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL) => new Response(JSON.stringify({ events: [] }), { status: 200, headers: { 'content-type': 'application/json' } }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    await loadApiResults({});
+
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain('dates=20260628-20260719');
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain('limit=200');
+  });
+
   it('does not treat the third-place match as the bracket final', async () => {
     vi.stubGlobal(
       'fetch',

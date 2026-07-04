@@ -25,6 +25,14 @@ export const fallbackResults: ResultsByMatch = {
     winnerTeamId: 'canada',
     source: 'manual',
   },
+  'r32-04': {
+    matchId: 'r32-04',
+    status: 'final',
+    homeScore: 1,
+    awayScore: 1,
+    winnerTeamId: 'morocco',
+    source: 'api',
+  },
   'r32-05': {
     matchId: 'r32-05',
     status: 'final',
@@ -39,6 +47,14 @@ export const fallbackResults: ResultsByMatch = {
     homeScore: 3,
     awayScore: 0,
     winnerTeamId: 'spain',
+    source: 'api',
+  },
+  'r32-07': {
+    matchId: 'r32-07',
+    status: 'final',
+    homeScore: 2,
+    awayScore: 0,
+    winnerTeamId: 'united-states',
     source: 'api',
   },
   'r32-08': {

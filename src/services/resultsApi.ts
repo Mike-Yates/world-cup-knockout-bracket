@@ -225,7 +225,7 @@ const fetchJson = async (url: string) => {
 
 const loadEspnScoreboard = async () => {
   try {
-    return (await fetchJson('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard')) as EspnScoreboardResponse;
+    return (await fetchJson('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=20260628-20260719&limit=200')) as EspnScoreboardResponse;
   } catch {
     return undefined;
   }
