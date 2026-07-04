@@ -107,7 +107,7 @@ Live World Cup winner odds are fetched in the browser from Polymarket through `s
 - `src/data/championPlayers.ts`: champion pick photo mappings.
 - `scripts/generate-participants.ts`: generates `src/data/generated/participants.json`.
 - `scripts/update-results.ts`: refreshes cached final results.
-- `update.sh`: manual EC2/nginx update script that refreshes cached results, builds, syncs `dist/`, validates nginx, and reloads nginx.
+- `update.sh`: manual EC2/nginx update script that installs/starts the auto-update systemd timer when needed, refreshes cached results, builds, syncs `dist/`, validates nginx, and reloads nginx.
 - `ops/auto-update/`: UTC schedule and gated server-side timed result refresh script.
 - `public/images/`: static image assets served by Vite.
 

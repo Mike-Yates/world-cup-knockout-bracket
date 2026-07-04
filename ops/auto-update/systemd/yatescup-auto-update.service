@@ -1,0 +1,12 @@
+[Unit]
+Description=Yates Cup auto update
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=__YATESCUP_SERVICE_USER__
+Environment=HOME=__YATESCUP_SERVICE_HOME__
+WorkingDirectory=__YATESCUP_APP_DIR__
+EnvironmentFile=__YATESCUP_APP_DIR__/.env
+ExecStart=/usr/bin/npm run auto:update

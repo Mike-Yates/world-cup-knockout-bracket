@@ -65,11 +65,13 @@ The script reads `YATESCUP_WEB_ROOT` from the environment or local `.env` before
 
 The script disables `yatescup-auto-update.timer` after `autoUpdateStopsAtUtc`. Set `YATESCUP_AUTO_UPDATE_TIMER_NAME` if you install the timer under a different name.
 
-## Suggested systemd Timer
+## systemd Timer
 
-Use a 2-minute timer and let the script decide whether any API call is needed.
+Use a 2-minute timer and let the script decide whether any API call is needed. Source-controlled unit templates live in `ops/auto-update/systemd/`.
 
-Service:
+`update.sh` installs/updates these templates under `/etc/systemd/system/`, substitutes the current repo path and service user, reloads systemd when unit files change, and enables/starts `yatescup-auto-update.timer` if it is missing or inactive.
+
+Service template:
 
 ```ini
 [Unit]
@@ -79,12 +81,14 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-WorkingDirectory=/path/to/world-cup
-EnvironmentFile=/path/to/world-cup/.env
+User=__YATESCUP_SERVICE_USER__
+Environment=HOME=__YATESCUP_SERVICE_HOME__
+WorkingDirectory=__YATESCUP_APP_DIR__
+EnvironmentFile=__YATESCUP_APP_DIR__/.env
 ExecStart=/usr/bin/npm run auto:update
 ```
 
-Timer:
+Timer template:
 
 ```ini
 [Unit]

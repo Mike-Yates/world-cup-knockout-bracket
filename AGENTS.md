@@ -7,14 +7,14 @@
 - Build: `npm run build` (`prebuild` regenerates participant data, then `tsc -b && vite build`).
 - Tests: `npm test`; focused test: `npm test -- src/lib/scoring.test.ts`.
 - Refresh cached final results: `npm run update:results`.
-- Manual server update/deploy: `./update.sh`.
+- Manual server update/deploy: `./update.sh` (also installs/starts the auto-update systemd timer when needed).
 - No lint or formatter script is configured.
 
 ## Test Deploys
 - When the user asks to implement a visible change, deploy it for verification unless they explicitly say not to deploy.
 - Preferred flow is local build, then sync `dist/` to EC2/nginx; do not build on the server for normal test deploys.
 - Include `npm run update:results` before the test build so cached results are refreshed for the deployed bundle.
-- Test/deploy command; source local deploy values from ignored `.env` first:
+- Test/deploy command; source local deploy values from `.env` first:
   `. ./.env && npm test && npm run update:results && npm run build && rsync -az --delete -e "ssh -i $YATESCUP_SSH_KEY -o BatchMode=yes" "dist/" "$YATESCUP_USER@$YATESCUP_HOST:/tmp/yatescup-dist/" && ssh -i "$YATESCUP_SSH_KEY" -o BatchMode=yes "$YATESCUP_USER@$YATESCUP_HOST" "sudo rsync -az --delete /tmp/yatescup-dist/ \"$YATESCUP_WEB_ROOT/\" && sudo nginx -t && sudo systemctl reload nginx"`
 - After deploying, verify `https://yatescup.com` responds and references the newly built asset names.
 
