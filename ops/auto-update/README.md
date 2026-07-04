@@ -35,7 +35,7 @@ Script logic:
 
 This keeps polling focused on likely final-result windows while also handling manual updates: if `update.sh` or a manual deploy already cached the result, the next timer run sees `cachedResults >= expectedCachedResults` and stops calling the API.
 
-By default, `npm run auto:update` does not run `git pull` or `npm install`. That avoids problems caused by the server's local `src/data/results.ts` changing after automatic cache refreshes. If you intentionally want to refresh repo code before the gated API check, run `npm run auto:update -- --pull`.
+By default, `npm run auto:update` does not refresh repo code or run `npm install`. If you intentionally want to refresh repo code before the gated API check, run `npm run auto:update -- --pull`; that path fetches the configured upstream branch and runs `git reset --hard` before installing dependencies so tracked cache files from prior server refreshes do not block updates.
 
 ## Why Not Browser-Triggered
 
@@ -105,7 +105,7 @@ WantedBy=timers.target
 
 ## Manual update.sh Cleanup
 
-The current `update.sh` should add `set -euo pipefail`, use `git pull --ff-only`, validate nginx config, and run `sudo systemctl daemon-reload` before reloading nginx to clear the unit-file warning.
+The current `update.sh` should add `set -euo pipefail`, fetch and reset to the configured upstream branch, validate nginx config, and run `sudo systemctl daemon-reload` before reloading nginx to clear the unit-file warning.
 
 Suggested manual script:
 
@@ -114,7 +114,8 @@ Suggested manual script:
 set -euo pipefail
 
 cd ~/world-cup-knockout-bracket
-git pull --ff-only
+git fetch --prune origin
+git reset --hard origin/master
 npm install
 npm run update:results
 npm run build
