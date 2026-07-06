@@ -7,20 +7,20 @@ export type TeamEloRating = {
 
 export const teamEloSourceUrl = 'https://www.eloratings.net/World.tsv';
 
-export const teamEloFetchedAt = '2026-07-06T00:57:34.904Z';
+export const teamEloFetchedAt = '2026-07-06T23:13:00.892Z';
 
 export const currentTeamElo: Record<TeamId, TeamEloRating> = {
-  'germany': { rating: 1908, sourceCode: 'DE' },
+  'germany': { rating: 1907, sourceCode: 'DE' },
   'paraguay': { rating: 1814, sourceCode: 'PY' },
   'france': { rating: 2143, sourceCode: 'FR' },
   'sweden': { rating: 1731, sourceCode: 'SE' },
-  'south-africa': { rating: 1559, sourceCode: 'ZA' },
+  'south-africa': { rating: 1560, sourceCode: 'ZA' },
   'canada': { rating: 1729, sourceCode: 'CA' },
   'netherlands': { rating: 1971, sourceCode: 'NL' },
   'morocco': { rating: 1921, sourceCode: 'MA' },
-  'portugal': { rating: 2013, sourceCode: 'PT' },
-  'croatia': { rating: 1882, sourceCode: 'HR' },
-  'spain': { rating: 2159, sourceCode: 'ES' },
+  'portugal': { rating: 1995, sourceCode: 'PT' },
+  'croatia': { rating: 1881, sourceCode: 'HR' },
+  'spain': { rating: 2177, sourceCode: 'ES' },
   'austria': { rating: 1821, sourceCode: 'AT' },
   'united-states': { rating: 1798, sourceCode: 'US' },
   'bosnia-and-herzegovina': { rating: 1605, sourceCode: 'BA' },
@@ -30,9 +30,9 @@ export const currentTeamElo: Record<TeamId, TeamEloRating> = {
   'japan': { rating: 1888, sourceCode: 'JP' },
   'ivory-coast': { rating: 1727, sourceCode: 'CI' },
   'norway': { rating: 1972, sourceCode: 'NO' },
-  'mexico': { rating: 1943, sourceCode: 'MX' },
+  'mexico': { rating: 1913, sourceCode: 'MX' },
   'ecuador': { rating: 1871, sourceCode: 'EC' },
-  'england': { rating: 2046, sourceCode: 'EN' },
+  'england': { rating: 2076, sourceCode: 'EN' },
   'dr-congo': { rating: 1704, sourceCode: 'CD' },
   'argentina': { rating: 2151, sourceCode: 'AR' },
   'cape-verde': { rating: 1619, sourceCode: 'CV' },

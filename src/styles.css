@@ -215,6 +215,95 @@ h3 {
   font-size: 1.35rem;
 }
 
+.simulation-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  margin: -4px 0 22px;
+  padding: 22px;
+  border: 1px solid rgba(105, 183, 255, 0.36);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(105, 183, 255, 0.26), rgba(105, 183, 255, 0.08)),
+    rgba(8, 24, 46, 0.9);
+  box-shadow: 0 18px 70px rgba(0, 0, 0, 0.22);
+}
+
+.simulation-panel h2 {
+  margin-bottom: 8px;
+  font-size: clamp(1.7rem, 3.4vw, 2.8rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.simulation-copy {
+  margin-bottom: 0;
+  color: #d9ecff;
+}
+
+.simulation-copy strong {
+  color: #fff;
+}
+
+.simulation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.simulation-team-button,
+.simulation-reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  color: #f7fbff;
+  background: rgba(255, 255, 255, 0.12);
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.simulation-team-button {
+  gap: 8px;
+  padding: 10px 16px;
+}
+
+.simulation-team-button:hover,
+.simulation-team-button:focus-visible,
+.simulation-reset:hover:not(:disabled),
+.simulation-reset:focus-visible:not(:disabled) {
+  border-color: rgba(105, 183, 255, 0.72);
+  background: rgba(255, 255, 255, 0.18);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.simulation-team-selected {
+  border-color: rgba(56, 210, 125, 0.88);
+  color: #062313;
+  background: linear-gradient(135deg, #69e99f, var(--green));
+}
+
+.simulation-reset {
+  padding: 10px 18px;
+  color: #07111f;
+  background: #d9ecff;
+}
+
+.simulation-reset:disabled {
+  color: rgba(247, 251, 255, 0.42);
+  background: rgba(255, 255, 255, 0.08);
+  cursor: not-allowed;
+}
+
 .champion-player-photo {
   display: none;
 }
@@ -302,9 +391,9 @@ h3 {
 
 .prediction-row {
   display: grid;
-  grid-template-columns: 70px minmax(150px, 1fr) 120px 120px;
+  grid-template-columns: 70px 110px minmax(150px, 1fr) 120px 120px;
   align-items: center;
-  min-width: 560px;
+  min-width: 660px;
   gap: 14px;
   padding: 15px 22px;
   border-top: 1px solid var(--line);
@@ -345,6 +434,7 @@ h3 {
 }
 
 .rank,
+.standing,
 .possible {
   color: var(--gold);
   font-weight: 900;
@@ -655,6 +745,37 @@ h3 {
     grid-template-columns: 1fr;
   }
 
+  .simulation-panel {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: -6px;
+    padding: 18px 12px;
+  }
+
+  .simulation-copy span {
+    display: block;
+    margin-top: 4px;
+  }
+
+  .simulation-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: stretch;
+    gap: 8px;
+  }
+
+  .simulation-team-button,
+  .simulation-reset {
+    width: 100%;
+    min-height: 42px;
+    padding: 9px 10px;
+    font-size: 0.82rem;
+  }
+
+  .simulation-reset {
+    grid-column: 1 / -1;
+  }
+
   .hero-title {
     grid-column: 1 / -1;
   }
@@ -695,9 +816,9 @@ h3 {
   }
 
   .prediction-row {
-    grid-template-columns: 28px minmax(112px, 1fr) 64px 64px;
+    grid-template-columns: 28px 32px minmax(88px, 1fr) 58px 58px;
     min-width: 0;
-    gap: 6px;
+    gap: 5px;
     padding: 12px 8px;
     font-size: 0.88rem;
   }

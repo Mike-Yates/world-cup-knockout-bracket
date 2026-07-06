@@ -7,6 +7,7 @@ import { getFlagImageUrl, getTeam } from './data/teams';
 import { evaluationByPick, rankParticipants } from './lib/scoring';
 import { PredictionsView } from './predictions/PredictionsView';
 import { calculatePredictionChances } from './predictions/probabilities';
+import { getNextSimulationMatch, makeSimulationResult } from './predictions/simulation';
 import { loadWorldCupWinnerOdds, type WinnerOdds } from './services/polymarketApi';
 import { loadApiResults, mergeResults } from './services/resultsApi';
 import type { Participant, ParticipantScore, PickEvaluation, PickRoundKey, ResultsByMatch, TeamId } from './types';
@@ -253,6 +254,7 @@ export default function App() {
   const isPredictionsPath = window.location.pathname.replace(/\/+$/, '') === '/predictions';
   const [selectedParticipantId, setSelectedParticipantId] = useState(hashToParticipantId);
   const [results, setResults] = useState<ResultsByMatch>(fallbackResults);
+  const [simulatedWinnerTeamId, setSimulatedWinnerTeamId] = useState<TeamId>();
   const [winnerOdds, setWinnerOdds] = useState<WinnerOdds[]>([]);
 
   useEffect(() => {
@@ -291,9 +293,26 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  const leaderboard = rankParticipants(participants, results);
+  const nextSimulationMatch = useMemo(() => (isPredictionsPath ? getNextSimulationMatch(results) : undefined), [isPredictionsPath, results]);
+  const simulatedResults = useMemo(() => {
+    if (!nextSimulationMatch || !simulatedWinnerTeamId) {
+      return results;
+    }
+
+    return {
+      ...results,
+      [nextSimulationMatch.matchId]: makeSimulationResult(nextSimulationMatch, simulatedWinnerTeamId),
+    };
+  }, [nextSimulationMatch, results, simulatedWinnerTeamId]);
+  const leaderboard = rankParticipants(participants, simulatedResults);
   const selectedScore = selectedParticipantId ? leaderboard.find((score) => score.participant.id === selectedParticipantId) : undefined;
-  const predictionResult = useMemo(() => (isPredictionsPath ? calculatePredictionChances(participants, results) : undefined), [isPredictionsPath, results]);
+  const predictionResult = useMemo(() => (isPredictionsPath ? calculatePredictionChances(participants, simulatedResults) : undefined), [isPredictionsPath, simulatedResults]);
+
+  useEffect(() => {
+    if (simulatedWinnerTeamId && !nextSimulationMatch?.teamIds.includes(simulatedWinnerTeamId)) {
+      setSimulatedWinnerTeamId(undefined);
+    }
+  }, [nextSimulationMatch, simulatedWinnerTeamId]);
 
   return (
     <div className="app-shell">
@@ -305,7 +324,14 @@ export default function App() {
       </header>
 
       {predictionResult ? (
-        <PredictionsView predictionResult={predictionResult} />
+        <PredictionsView
+          predictionResult={predictionResult}
+          leaderboard={leaderboard}
+          simulationMatch={nextSimulationMatch}
+          simulatedWinnerTeamId={simulatedWinnerTeamId}
+          onSelectSimulatedWinner={setSimulatedWinnerTeamId}
+          onResetSimulation={() => setSimulatedWinnerTeamId(undefined)}
+        />
       ) : selectedScore ? (
         <ParticipantView score={selectedScore} />
       ) : (
