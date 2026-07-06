@@ -1,32 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Bracket } from './components/Bracket';
+import { TeamBadge } from './components/TeamBadge';
 import generatedParticipants from './data/generated/participants.json';
 import { championPlayersByTeamId } from './data/championPlayers';
-import { initialTeamIds } from './data/bracket';
 import { fallbackResults } from './data/results';
-import { getFlagImageUrl, getTeam } from './data/teams';
-import { evaluationByPick, rankParticipants } from './lib/scoring';
+import { rankParticipants } from './lib/scoring';
 import { PredictionsView } from './predictions/PredictionsView';
 import { calculatePredictionChances } from './predictions/probabilities';
 import { getNextSimulationMatch, makeSimulationResult } from './predictions/simulation';
+import { calculateWinningScenarios } from './predictions/winningScenarios';
 import { loadWorldCupWinnerOdds, type WinnerOdds } from './services/polymarketApi';
 import { loadApiResults, mergeResults } from './services/resultsApi';
-import type { Participant, ParticipantScore, PickEvaluation, PickRoundKey, ResultsByMatch, TeamId } from './types';
+import type { Participant, ParticipantScore, ResultsByMatch, TeamId } from './types';
 
 const participants = generatedParticipants as Participant[];
-
-const bracketColumns: Array<{ key: PickRoundKey; label: string; start: number; count: number; side: 'left' | 'center' | 'right' }> = [
-  { key: 'round32', label: 'Round of 32', start: 0, count: 8, side: 'left' },
-  { key: 'round16', label: 'Round of 16', start: 0, count: 8, side: 'left' },
-  { key: 'round8', label: 'Quarterfinals', start: 0, count: 4, side: 'left' },
-  { key: 'round4', label: 'Semifinals', start: 0, count: 2, side: 'left' },
-  { key: 'round2', label: 'Finalist', start: 0, count: 1, side: 'left' },
-  { key: 'winner', label: 'Champion', start: 0, count: 1, side: 'center' },
-  { key: 'round2', label: 'Finalist', start: 1, count: 1, side: 'right' },
-  { key: 'round4', label: 'Semifinals', start: 2, count: 2, side: 'right' },
-  { key: 'round8', label: 'Quarterfinals', start: 4, count: 4, side: 'right' },
-  { key: 'round16', label: 'Round of 16', start: 8, count: 8, side: 'right' },
-  { key: 'round32', label: 'Round of 32', start: 8, count: 8, side: 'right' },
-];
 
 const hashToParticipantId = () => window.location.hash.replace(/^#\/bracket\//, '') || undefined;
 
@@ -36,41 +23,6 @@ const setParticipantHash = (participantId: string) => {
 
 const clearHash = () => {
   window.location.hash = '';
-};
-
-const StatusMark = ({ evaluation }: { evaluation?: PickEvaluation }) => {
-  if (!evaluation || evaluation.status === 'pending') {
-    return null;
-  }
-
-  if (evaluation.status === 'correct') {
-    return (
-      <span className="status status-correct" aria-label="Correct">
-        ✓
-      </span>
-    );
-  }
-
-  return (
-    <span className="status status-wrong" aria-label={evaluation.status === 'eliminated' ? 'Eliminated' : 'Incorrect'}>
-      X
-    </span>
-  );
-};
-
-const TeamBadge = ({ teamId, muted = false, compactOnMobile = false }: { teamId: TeamId; muted?: boolean; compactOnMobile?: boolean }) => {
-  const team = getTeam(teamId);
-  return (
-    <span className={`team-badge${muted ? ' team-badge-muted' : ''}${compactOnMobile ? ' team-badge-compact-mobile' : ''}`}>
-      <img className="flag" src={getFlagImageUrl(team.countryCode)} alt="" aria-hidden="true" loading="lazy" />
-      <span className="team-name">{team.name}</span>
-      {compactOnMobile ? (
-        <span className="team-code" aria-hidden="true">
-          {team.fifaCode}
-        </span>
-      ) : null}
-    </span>
-  );
 };
 
 const formatProbability = (probability: number) => `${(probability * 100).toFixed(1)}%`;
@@ -135,59 +87,6 @@ const Leaderboard = ({ scores, winnerOdds }: { scores: ParticipantScore[]; winne
     </div>
   </section>
 );
-
-const FirstRoundMatch = ({ matchIndex }: { matchIndex: number }) => {
-  const teamIds = [initialTeamIds[matchIndex * 2], initialTeamIds[matchIndex * 2 + 1]];
-
-  return (
-    <div className="match-card">
-      {teamIds.map((teamId) => (
-        <div key={teamId} className="match-team">
-          <TeamBadge teamId={teamId} />
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const PickCard = ({ teamId, evaluation }: { teamId: TeamId; evaluation?: PickEvaluation }) => (
-  <div className={`pick-card pick-${evaluation?.status ?? 'base'}`}>
-    <TeamBadge teamId={teamId} muted={evaluation?.status === 'incorrect' || evaluation?.status === 'eliminated'} />
-    <StatusMark evaluation={evaluation} />
-  </div>
-);
-
-const Bracket = ({ score }: { score: ParticipantScore }) => {
-  const evaluations = evaluationByPick(score.evaluations);
-
-  return (
-    <section className="bracket-shell" aria-label={`${score.participant.displayName} bracket`}>
-      <div className="bracket-scroll">
-        {bracketColumns.map((column) => (
-          <div key={`${column.side}-${column.key}-${column.start}`} className={`round-column round-${column.key} side-${column.side}`}>
-            <h3>{column.label}</h3>
-            <div className="round-stack">
-              {column.key === 'round32'
-                ? Array.from({ length: column.count }, (_, index) => (
-                    <div key={index} className="bracket-slot slot-round32">
-                      <FirstRoundMatch matchIndex={column.start + index} />
-                    </div>
-                  ))
-                : score.participant.picks[column.key].slice(column.start, column.start + column.count).map((teamId, index) => {
-                    const pickIndex = column.start + index;
-                    return (
-                      <div key={`${column.key}-${pickIndex}`} className={`bracket-slot slot-${column.key}`}>
-                        <PickCard teamId={teamId} evaluation={evaluations.get(`${column.key}:${pickIndex}`)} />
-                      </div>
-                    );
-                  })}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-};
 
 const ParticipantView = ({ score }: { score: ParticipantScore }) => {
   const championPlayer = championPlayersByTeamId[score.championPickTeamId];
@@ -307,6 +206,10 @@ export default function App() {
   const leaderboard = rankParticipants(participants, simulatedResults);
   const selectedScore = selectedParticipantId ? leaderboard.find((score) => score.participant.id === selectedParticipantId) : undefined;
   const predictionResult = useMemo(() => (isPredictionsPath ? calculatePredictionChances(participants, simulatedResults) : undefined), [isPredictionsPath, simulatedResults]);
+  const winningScenariosByParticipantId = useMemo(
+    () => (isPredictionsPath ? calculateWinningScenarios(participants, results) : undefined),
+    [isPredictionsPath, results],
+  );
 
   useEffect(() => {
     if (simulatedWinnerTeamId && !nextSimulationMatch?.teamIds.includes(simulatedWinnerTeamId)) {
@@ -329,6 +232,7 @@ export default function App() {
           leaderboard={leaderboard}
           simulationMatch={nextSimulationMatch}
           simulatedWinnerTeamId={simulatedWinnerTeamId}
+          winningScenariosByParticipantId={winningScenariosByParticipantId ?? {}}
           onSelectSimulatedWinner={setSimulatedWinnerTeamId}
           onResetSimulation={() => setSimulatedWinnerTeamId(undefined)}
         />

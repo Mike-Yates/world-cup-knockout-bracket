@@ -1,8 +1,11 @@
+import { useState } from 'react';
+import { Bracket } from '../components/Bracket';
 import { getFlagImageUrl, getTeam } from '../data/teams';
-import type { ParticipantScore, TeamId } from '../types';
+import type { Participant, ParticipantScore, TeamId } from '../types';
 import type { PredictionResult } from './probabilities';
 import type { SimulationMatch } from './simulation';
 import { teamEloFetchedAt } from './teamElo';
+import type { WinningScenariosByParticipantId } from './winningScenarios';
 
 const formatProbability = (probability: number) => `${(probability * 100).toFixed(3)}%`;
 
@@ -60,11 +63,69 @@ const SimulationPanel = ({
   </section>
 );
 
+const ScenarioCard = ({
+  participant,
+  scenarios,
+  selectedScenarioIndex,
+  onSelectScenario,
+  onClose,
+}: {
+  participant: Participant;
+  scenarios: WinningScenariosByParticipantId[string];
+  selectedScenarioIndex?: number;
+  onSelectScenario: (index: number) => void;
+  onClose: () => void;
+}) => {
+  const selectedScenario = selectedScenarioIndex === undefined ? undefined : scenarios[selectedScenarioIndex];
+
+  return (
+    <section className="prediction-player-card" aria-labelledby="prediction-player-title">
+      <div className="prediction-player-heading">
+        <div>
+          <p className="eyebrow">Winning Paths</p>
+          <h2 id="prediction-player-title">{participant.displayName}</h2>
+          <p className="prediction-player-copy">
+            {scenarios.length.toLocaleString()} bracket {scenarios.length === 1 ? 'path puts' : 'paths put'} {participant.displayName} in first using current results.
+          </p>
+        </div>
+        <button className="prediction-player-close" onClick={onClose} type="button">
+          Close
+        </button>
+      </div>
+
+      {scenarios.length > 0 ? (
+        <div className="scenario-grid" aria-label={`${participant.displayName} winning bracket paths`}>
+          {scenarios.map((scenario, index) => (
+            <button
+              key={scenario.participant.id}
+              className={`scenario-tile${selectedScenarioIndex === index ? ' scenario-tile-selected' : ''}`}
+              onClick={() => onSelectScenario(index)}
+              type="button"
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <p className="prediction-player-empty">No remaining bracket paths put this player in first.</p>
+      )}
+
+      {selectedScenario ? (
+        <div className="scenario-bracket">
+          <p className="scenario-bracket-title">Winning Bracket {(selectedScenarioIndex ?? 0) + 1}</p>
+          <Bracket score={selectedScenario.score} />
+        </div>
+      ) : null}
+    </section>
+  );
+};
+
 export const PredictionsView = ({
   predictionResult,
   leaderboard,
   simulationMatch,
   simulatedWinnerTeamId,
+  winningScenariosByParticipantId,
   onSelectSimulatedWinner,
   onResetSimulation,
 }: {
@@ -72,10 +133,42 @@ export const PredictionsView = ({
   leaderboard: ParticipantScore[];
   simulationMatch?: SimulationMatch;
   simulatedWinnerTeamId?: TeamId;
+  winningScenariosByParticipantId: WinningScenariosByParticipantId;
   onSelectSimulatedWinner: (teamId: TeamId) => void;
   onResetSimulation: () => void;
 }) => {
+  const [selectedParticipantId, setSelectedParticipantId] = useState<string>();
+  const [selectedScenarioIndex, setSelectedScenarioIndex] = useState<number>();
   const standingsByParticipantId = new Map(leaderboard.map((score, index) => [score.participant.id, index + 1]));
+  const selectedParticipant = predictionResult.chances.find((chance) => chance.participant.id === selectedParticipantId)?.participant;
+  const selectedScenarios = selectedParticipantId ? (winningScenariosByParticipantId[selectedParticipantId] ?? []) : [];
+
+  const selectParticipant = (participantId: string) => {
+    setSelectedParticipantId(participantId);
+    setSelectedScenarioIndex(undefined);
+  };
+
+  const closeScenarioCard = () => {
+    setSelectedParticipantId(undefined);
+    setSelectedScenarioIndex(undefined);
+  };
+
+  if (selectedParticipant) {
+    return (
+      <main>
+        <button className="back-button" onClick={closeScenarioCard} type="button">
+          ← Back to predictions
+        </button>
+        <ScenarioCard
+          participant={selectedParticipant}
+          scenarios={selectedScenarios}
+          selectedScenarioIndex={selectedScenarioIndex}
+          onSelectScenario={setSelectedScenarioIndex}
+          onClose={closeScenarioCard}
+        />
+      </main>
+    );
+  }
 
   return (
     <main>
@@ -132,7 +225,13 @@ export const PredictionsView = ({
           </div>
 
           {predictionResult.chances.map((chance, index) => (
-            <div key={chance.participant.id} className="prediction-row" role="row">
+            <button
+              key={chance.participant.id}
+              className="prediction-row prediction-button"
+              onClick={() => selectParticipant(chance.participant.id)}
+              role="row"
+              type="button"
+            >
               <span className="rank" role="cell">
                 {index + 1}
               </span>
@@ -146,7 +245,7 @@ export const PredictionsView = ({
               <span className="prediction-elo" role="cell">
                 {formatProbability(chance.eloProbability)}
               </span>
-            </div>
+            </button>
           ))}
         </div>
       </section>
