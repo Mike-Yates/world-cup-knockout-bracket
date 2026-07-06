@@ -129,4 +129,28 @@ export const fallbackResults: ResultsByMatch = {
     winnerTeamId: 'colombia',
     source: 'api',
   },
+  'r16-01': {
+    matchId: 'r16-01',
+    status: 'final',
+    homeScore: 0,
+    awayScore: 1,
+    winnerTeamId: 'france',
+    source: 'api',
+  },
+  'r16-02': {
+    matchId: 'r16-02',
+    status: 'final',
+    homeScore: 0,
+    awayScore: 3,
+    winnerTeamId: 'morocco',
+    source: 'api',
+  },
+  'r16-05': {
+    matchId: 'r16-05',
+    status: 'final',
+    homeScore: 1,
+    awayScore: 2,
+    winnerTeamId: 'norway',
+    source: 'api',
+  },
 };

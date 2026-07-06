@@ -1,6 +1,19 @@
 import { matchesById, scoringRounds } from '../data/bracket';
 import type { Match, MatchId, Participant, ParticipantScore, PickEvaluation, ResultsByMatch, TeamId } from '../types';
 
+const getMatchTeamIds = (match: Match, results: ResultsByMatch): [TeamId, TeamId] | undefined => {
+  if (match.teamIds) {
+    return match.teamIds;
+  }
+
+  const winnerTeamIds = match.sourceMatchIds?.map((sourceMatchId) => results[sourceMatchId]?.winnerTeamId);
+  if (winnerTeamIds?.length === 2 && winnerTeamIds[0] && winnerTeamIds[1]) {
+    return [winnerTeamIds[0], winnerTeamIds[1]];
+  }
+
+  return undefined;
+};
+
 export const getEliminatedTeamIds = (results: ResultsByMatch): Set<TeamId> => {
   const eliminatedTeamIds = new Set<TeamId>();
 
@@ -10,11 +23,12 @@ export const getEliminatedTeamIds = (results: ResultsByMatch): Set<TeamId> => {
     }
 
     const match = matchesById[result.matchId] as Match | undefined;
-    if (!match?.teamIds) {
+    const teamIds = match ? getMatchTeamIds(match, results) : undefined;
+    if (!teamIds) {
       return;
     }
 
-    match.teamIds.forEach((teamId) => {
+    teamIds.forEach((teamId) => {
       if (teamId !== result.winnerTeamId) {
         eliminatedTeamIds.add(teamId);
       }

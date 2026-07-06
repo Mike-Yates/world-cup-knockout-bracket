@@ -14,6 +14,33 @@ const canadaResults: ResultsByMatch = {
   },
 };
 
+const brazilLostToNorwayResults: ResultsByMatch = {
+  'r32-09': {
+    matchId: 'r32-09',
+    status: 'final',
+    homeScore: 2,
+    awayScore: 1,
+    winnerTeamId: 'brazil',
+    source: 'test',
+  },
+  'r32-10': {
+    matchId: 'r32-10',
+    status: 'final',
+    homeScore: 1,
+    awayScore: 2,
+    winnerTeamId: 'norway',
+    source: 'test',
+  },
+  'r16-05': {
+    matchId: 'r16-05',
+    status: 'final',
+    homeScore: 1,
+    awayScore: 2,
+    winnerTeamId: 'norway',
+    source: 'test',
+  },
+};
+
 const baseRound32 = `# Round of 32
 Germany
 Paraguay
@@ -122,6 +149,8 @@ const wrongSouthAfricaPicks = correctCanadaPicks.replace('\nCanada\nMorocco\n', 
   '\nFrance\nSouth Africa\n\nSpain',
 );
 
+const brazilChampionPicks = correctCanadaPicks.replace('\n# Winner\nFrance', '\n# Winner\nBrazil');
+
 const participantFromText = (fileName: string, text: string) => parseParticipantFile({ fileName, text });
 
 describe('scoring', () => {
@@ -136,6 +165,17 @@ describe('scoring', () => {
 
     expect(john.evaluations.find((evaluation) => evaluation.matchId === 'r32-03')?.status).toBe('incorrect');
     expect(john.evaluations.find((evaluation) => evaluation.matchId === 'r16-02')?.status).toBe('eliminated');
+  });
+
+  it('cascades elimination from resolved derived matches', () => {
+    const score = evaluateParticipant(participantFromText('CarolineCostello.txt', brazilChampionPicks), brazilLostToNorwayResults);
+
+    expect(score.currentPoints).toBe(2);
+    expect(score.totalPossible).toBe(43);
+    expect(score.evaluations.find((evaluation) => evaluation.matchId === 'r16-05')?.status).toBe('incorrect');
+    expect(score.evaluations.find((evaluation) => evaluation.matchId === 'qf-03')?.status).toBe('eliminated');
+    expect(score.evaluations.find((evaluation) => evaluation.matchId === 'sf-02')?.status).toBe('eliminated');
+    expect(score.evaluations.find((evaluation) => evaluation.matchId === 'final')?.status).toBe('eliminated');
   });
 
   it('ranks by points, then total possible, then name', () => {
