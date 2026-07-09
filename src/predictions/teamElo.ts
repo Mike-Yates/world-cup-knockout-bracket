@@ -7,7 +7,7 @@ export type TeamEloRating = {
 
 export const teamEloSourceUrl = 'https://www.eloratings.net/World.tsv';
 
-export const teamEloFetchedAt = '2026-07-06T23:13:00.892Z';
+export const teamEloFetchedAt = '2026-07-09T22:09:12.176Z';
 
 export const currentTeamElo: Record<TeamId, TeamEloRating> = {
   'germany': { rating: 1907, sourceCode: 'DE' },
@@ -22,9 +22,9 @@ export const currentTeamElo: Record<TeamId, TeamEloRating> = {
   'croatia': { rating: 1881, sourceCode: 'HR' },
   'spain': { rating: 2177, sourceCode: 'ES' },
   'austria': { rating: 1821, sourceCode: 'AT' },
-  'united-states': { rating: 1798, sourceCode: 'US' },
+  'united-states': { rating: 1747, sourceCode: 'US' },
   'bosnia-and-herzegovina': { rating: 1605, sourceCode: 'BA' },
-  'belgium': { rating: 1910, sourceCode: 'BE' },
+  'belgium': { rating: 1961, sourceCode: 'BE' },
   'senegal': { rating: 1816, sourceCode: 'SN' },
   'brazil': { rating: 1993, sourceCode: 'BR' },
   'japan': { rating: 1888, sourceCode: 'JP' },
@@ -34,12 +34,12 @@ export const currentTeamElo: Record<TeamId, TeamEloRating> = {
   'ecuador': { rating: 1871, sourceCode: 'EC' },
   'england': { rating: 2076, sourceCode: 'EN' },
   'dr-congo': { rating: 1704, sourceCode: 'CD' },
-  'argentina': { rating: 2151, sourceCode: 'AR' },
+  'argentina': { rating: 2156, sourceCode: 'AR' },
   'cape-verde': { rating: 1619, sourceCode: 'CV' },
   'australia': { rating: 1795, sourceCode: 'AU' },
-  'egypt': { rating: 1747, sourceCode: 'EG' },
-  'switzerland': { rating: 1943, sourceCode: 'CH' },
+  'egypt': { rating: 1742, sourceCode: 'EG' },
+  'switzerland': { rating: 1949, sourceCode: 'CH' },
   'algeria': { rating: 1756, sourceCode: 'DZ' },
-  'colombia': { rating: 2009, sourceCode: 'CO' },
+  'colombia': { rating: 2003, sourceCode: 'CO' },
   'ghana': { rating: 1570, sourceCode: 'GH' },
 };

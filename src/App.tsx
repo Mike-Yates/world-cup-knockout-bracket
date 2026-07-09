@@ -17,12 +17,23 @@ const participants = generatedParticipants as Participant[];
 
 const hashToParticipantId = () => window.location.hash.replace(/^#\/bracket\//, '') || undefined;
 
+const normalizedPath = () => window.location.pathname.replace(/\/+$/, '') || '/';
+
+const predictionParticipantIdFromPath = (pathname: string) => {
+  const match = pathname.match(/^\/predictions\/(.+)$/);
+  return match ? decodeURIComponent(match[1]) : undefined;
+};
+
 const setParticipantHash = (participantId: string) => {
   window.location.hash = `/bracket/${participantId}`;
 };
 
 const clearHash = () => {
   window.location.hash = '';
+};
+
+const pushPath = (path: string) => {
+  window.history.pushState(null, '', path);
 };
 
 const formatProbability = (probability: number) => `${(probability * 100).toFixed(1)}%`;
@@ -85,6 +96,11 @@ const Leaderboard = ({ scores, winnerOdds }: { scores: ParticipantScore[]; winne
         </button>
       ))}
     </div>
+
+    <a className="spoiler-tile" href="/predictions">
+      <span>Want spoilers?</span>
+      <strong>Check the prediction page out.</strong>
+    </a>
   </section>
 );
 
@@ -150,11 +166,13 @@ const HomeView = ({ scores, winnerOdds }: { scores: ParticipantScore[]; winnerOd
 );
 
 export default function App() {
-  const isPredictionsPath = window.location.pathname.replace(/\/+$/, '') === '/predictions';
+  const [pathname, setPathname] = useState(normalizedPath);
   const [selectedParticipantId, setSelectedParticipantId] = useState(hashToParticipantId);
   const [results, setResults] = useState<ResultsByMatch>(fallbackResults);
   const [simulatedWinnerTeamId, setSimulatedWinnerTeamId] = useState<TeamId>();
   const [winnerOdds, setWinnerOdds] = useState<WinnerOdds[]>([]);
+  const isPredictionsPath = pathname === '/predictions' || pathname.startsWith('/predictions/');
+  const selectedPredictionParticipantId = predictionParticipantIdFromPath(pathname);
 
   useEffect(() => {
     let isMounted = true;
@@ -192,6 +210,23 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  useEffect(() => {
+    const handlePopState = () => setPathname(normalizedPath());
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigateToPredictionsParticipant = (participantId: string) => {
+    setSimulatedWinnerTeamId(undefined);
+    pushPath(`/predictions/${encodeURIComponent(participantId)}`);
+    setPathname(normalizedPath());
+  };
+
+  const navigateToPredictions = () => {
+    pushPath('/predictions');
+    setPathname(normalizedPath());
+  };
+
   const nextSimulationMatch = useMemo(() => (isPredictionsPath ? getNextSimulationMatch(results) : undefined), [isPredictionsPath, results]);
   const simulatedResults = useMemo(() => {
     if (!nextSimulationMatch || !simulatedWinnerTeamId) {
@@ -207,8 +242,8 @@ export default function App() {
   const selectedScore = selectedParticipantId ? leaderboard.find((score) => score.participant.id === selectedParticipantId) : undefined;
   const predictionResult = useMemo(() => (isPredictionsPath ? calculatePredictionChances(participants, simulatedResults) : undefined), [isPredictionsPath, simulatedResults]);
   const winningScenariosByParticipantId = useMemo(
-    () => (isPredictionsPath ? calculateWinningScenarios(participants, results) : undefined),
-    [isPredictionsPath, results],
+    () => (isPredictionsPath ? calculateWinningScenarios(participants, simulatedResults) : undefined),
+    [isPredictionsPath, simulatedResults],
   );
 
   useEffect(() => {
@@ -230,9 +265,12 @@ export default function App() {
         <PredictionsView
           predictionResult={predictionResult}
           leaderboard={leaderboard}
+          selectedParticipantId={selectedPredictionParticipantId}
           simulationMatch={nextSimulationMatch}
           simulatedWinnerTeamId={simulatedWinnerTeamId}
           winningScenariosByParticipantId={winningScenariosByParticipantId ?? {}}
+          onSelectParticipant={navigateToPredictionsParticipant}
+          onBackToPredictions={navigateToPredictions}
           onSelectSimulatedWinner={setSimulatedWinnerTeamId}
           onResetSimulation={() => setSimulatedWinnerTeamId(undefined)}
         />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
 import { Bracket } from '../components/Bracket';
 import { getFlagImageUrl, getTeam } from '../data/teams';
 import type { Participant, ParticipantScore, TeamId } from '../types';
@@ -67,30 +67,40 @@ const ScenarioCard = ({
   participant,
   scenarios,
   selectedScenarioIndex,
+  simulationMatch,
+  simulatedWinnerTeamId,
   onSelectScenario,
-  onClose,
+  onSelectSimulatedWinner,
+  onResetSimulation,
 }: {
   participant: Participant;
   scenarios: WinningScenariosByParticipantId[string];
   selectedScenarioIndex?: number;
+  simulationMatch?: SimulationMatch;
+  simulatedWinnerTeamId?: TeamId;
   onSelectScenario: (index: number) => void;
-  onClose: () => void;
+  onSelectSimulatedWinner: (teamId: TeamId) => void;
+  onResetSimulation: () => void;
 }) => {
   const selectedScenario = selectedScenarioIndex === undefined ? undefined : scenarios[selectedScenarioIndex];
 
   return (
     <section className="prediction-player-card" aria-labelledby="prediction-player-title">
+      <SimulationPanel
+        match={simulationMatch}
+        simulatedWinnerTeamId={simulatedWinnerTeamId}
+        onSelectWinner={onSelectSimulatedWinner}
+        onReset={onResetSimulation}
+      />
+
       <div className="prediction-player-heading">
         <div>
           <p className="eyebrow">Winning Paths</p>
           <h2 id="prediction-player-title">{participant.displayName}</h2>
           <p className="prediction-player-copy">
-            {scenarios.length.toLocaleString()} bracket {scenarios.length === 1 ? 'path puts' : 'paths put'} {participant.displayName} in first using current results.
+            {scenarios.length.toLocaleString()} remaining bracket {scenarios.length === 1 ? 'path puts' : 'paths put'} {participant.displayName} in first.
           </p>
         </div>
-        <button className="prediction-player-close" onClick={onClose} type="button">
-          Close
-        </button>
       </div>
 
       {scenarios.length > 0 ? (
@@ -123,48 +133,56 @@ const ScenarioCard = ({
 export const PredictionsView = ({
   predictionResult,
   leaderboard,
+  selectedParticipantId,
   simulationMatch,
   simulatedWinnerTeamId,
   winningScenariosByParticipantId,
+  onSelectParticipant,
+  onBackToPredictions,
   onSelectSimulatedWinner,
   onResetSimulation,
 }: {
   predictionResult: PredictionResult;
   leaderboard: ParticipantScore[];
+  selectedParticipantId?: string;
   simulationMatch?: SimulationMatch;
   simulatedWinnerTeamId?: TeamId;
   winningScenariosByParticipantId: WinningScenariosByParticipantId;
+  onSelectParticipant: (participantId: string) => void;
+  onBackToPredictions: () => void;
   onSelectSimulatedWinner: (teamId: TeamId) => void;
   onResetSimulation: () => void;
 }) => {
-  const [selectedParticipantId, setSelectedParticipantId] = useState<string>();
   const [selectedScenarioIndex, setSelectedScenarioIndex] = useState<number>();
   const standingsByParticipantId = new Map(leaderboard.map((score, index) => [score.participant.id, index + 1]));
   const selectedParticipant = predictionResult.chances.find((chance) => chance.participant.id === selectedParticipantId)?.participant;
   const selectedScenarios = selectedParticipantId ? (winningScenariosByParticipantId[selectedParticipantId] ?? []) : [];
 
-  const selectParticipant = (participantId: string) => {
-    setSelectedParticipantId(participantId);
+  useEffect(() => {
     setSelectedScenarioIndex(undefined);
-  };
+  }, [selectedParticipantId, simulatedWinnerTeamId]);
 
-  const closeScenarioCard = () => {
-    setSelectedParticipantId(undefined);
+  const backToPredictions = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
     setSelectedScenarioIndex(undefined);
+    onBackToPredictions();
   };
 
   if (selectedParticipant) {
     return (
       <main>
-        <button className="back-button" onClick={closeScenarioCard} type="button">
+        <a className="back-button" href="/predictions" onClick={backToPredictions}>
           ← Back to predictions
-        </button>
+        </a>
         <ScenarioCard
           participant={selectedParticipant}
           scenarios={selectedScenarios}
           selectedScenarioIndex={selectedScenarioIndex}
+          simulationMatch={simulationMatch}
+          simulatedWinnerTeamId={simulatedWinnerTeamId}
           onSelectScenario={setSelectedScenarioIndex}
-          onClose={closeScenarioCard}
+          onSelectSimulatedWinner={onSelectSimulatedWinner}
+          onResetSimulation={onResetSimulation}
         />
       </main>
     );
@@ -228,7 +246,7 @@ export const PredictionsView = ({
             <button
               key={chance.participant.id}
               className="prediction-row prediction-button"
-              onClick={() => selectParticipant(chance.participant.id)}
+              onClick={() => onSelectParticipant(chance.participant.id)}
               role="row"
               type="button"
             >
